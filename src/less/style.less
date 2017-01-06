@@ -7,6 +7,7 @@
 @upload-area-height: 200px;
 @mid-upload-area-height: 150px;
 @transition-time: 0.5s;
+@upload-margin: 10px;
 /*nav*/
 
 body {
@@ -152,10 +153,25 @@ nav {
 
 /* Upload */
 
+/*@media screen and (min-width: 862px) {
+  #upload {
+    width: 862px;
+    margin: 0 auto;
+  }
+}
+
+@media screen and (max-width: 861px){
+  #upload {
+    width: auto;
+  }
+}*/
+
+
 #upload {
   width: auto;
   z-index: 3;
-  margin-top: @nav-height + 10px;
+  margin: @nav-height + @upload-margin @upload-margin @upload-margin @upload-margin;
+
   position: relative;
   background: #F5F7FA;
   border: 2px dashed #ddd;
@@ -224,6 +240,8 @@ nav {
     line-height: 1em;
   }
 }
+
+
 
 @media screen and (max-width: 520px) {
   #upload {

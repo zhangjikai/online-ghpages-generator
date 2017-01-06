@@ -5,8 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Online Markdown Reader</title>
 
+
     <link rel="stylesheet" href="assets/lib/highlightjs/styles/github.css">
-    <link rel="stylesheet" href="assets/lib/prism/prism.css">
+    <link href="http://cdn.bootcss.com/prism/9000.0.1/themes/prism.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/lib/SyntaxHighlighter/styles/shCore.css">
+    <link rel="stylesheet" href="assets/lib/SyntaxHighlighter/styles/shCoreDefault.css">
     <link rel="stylesheet" href="assets/lib/font-awesome/css/font-awesome.min.css">
     <link href="assets/lib/remodal/dist/remodal.css" rel="stylesheet">
     <link href="assets/lib/remodal/dist/remodal-default-theme.css" rel="stylesheet">
@@ -16,7 +19,14 @@
     <link rel="stylesheet" href="assets/lib/magic-check/css/magic-check.min.css">
     <link rel="stylesheet" href="assets/lib/sweetalert/dist/sweetalert.css">
 
-    <link rel="stylesheet" href="assets/css/markdown.css">
+    <!--<link rel="stylesheet" href="assets/css/markdown.css">-->
+
+    <link href="http://fonts.useso.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="assets/theme/cayman/css/normalize.css">
+    <link rel="stylesheet" href="assets/theme/cayman/css/cayman.css">
+    <link rel="stylesheet" href="assets/css/custom-theme/custom-cayman.css">
+    <link href="http://cdn.bootcss.com/prism/9000.0.1/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet">
+
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/lib/loaders.css/loaders.min.css">
 
@@ -35,7 +45,6 @@
     <link href="dist/css/backtotop.min.css" rel="stylesheet">
     <link href="dist/css/markdown.min.css" rel="stylesheet">
     <link href="dist/css/style.min.css" rel="stylesheet">-->
-
 
 
 </head>
@@ -82,8 +91,35 @@
     </div>
 </div>
 
+<div id="container">
 
-<div id="content"></div>
+
+    <section class="page-header" id="page-header">
+        <h1 class="project-name" id="page-title"></h1>
+
+        <h2 class="project-tagline" id="page-desc"></h2>
+
+
+        <!--<a href="#" class="btn">View on GitHub</a>-->
+
+    </section>
+
+
+    <section class="main-content">
+        <div id="content">
+
+
+        </div>
+
+        <footer class="site-footer">
+            <span class="site-footer-owner" id="owner"></span>
+
+            <span class="site-footer-credits" id="credits"></span>
+        </footer>
+    </section>
+
+</div>
+
 
 <div class="remodal remodal-custom" data-remodal-id="modal">
     <div class="modal-header">
@@ -231,12 +267,22 @@
     }
   });
 
+
+
 </script>
-<script type="text/javascript" src="http://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/javascript"
+        src="http://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
 <script type="text/javascript" src="assets/lib/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="assets/lib/highlightjs/highlight.pack.min.js"></script>
 <script type="text/javascript" src="assets/lib/prism/prism.js"></script>
+
+<script src="http://cdn.bootcss.com/SyntaxHighlighter/3.0.83/scripts/shCore.min.js"></script>
+<script src="http://cdn.bootcss.com/SyntaxHighlighter/3.0.83/scripts/shBrushJScript.js"></script>
+<!--<script type="text/javascript" src="assets/lib/SyntaxHighlighter/scripts/shCore.js"></script>
+
+<script type="text/javascript" src="assets/lib/SyntaxHighlighter/scripts/shBrushCss.js"></script>
+<script type="text/javascript" src="assets/lib/SyntaxHighlighter/scripts/shBrushJScript.js"></script>-->
 <script type="text/javascript" src="assets/lib/marked/marked.min.js"></script>
 <script type="text/javascript" src="assets/lib/FileSaver.js/FileSaver.min.js"></script>
 <script type="text/javascript" src="assets/lib/js-beautify/js/lib/beautify.js"></script>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../assets/lib/highlightjs/styles/github.css">
+</head>
+<body>
+
+<pre><code>body{
+    margin: 0 auto;
+    font-family: Georgia, Palatino, serif;
+    color: #444444;
+    line-height: 1;
+    padding: 30px;
+    }
+</code></pre>
+
+<script type="text/javascript" src="../assets/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="../assets/lib/marked/marked.min.js"></script>
+<script type="text/javascript" src="../assets/lib/highlightjs/highlight.pack.min.js"></script>
+<script type="text/javascript" src="../assets/lib/prism/prism.js"></script>
+
+<script type="text/javascript" src="../assets/lib/js-beautify/js/lib/beautify.js"></script>
+<script type="text/javascript" src="../assets/lib/js-beautify/js/lib/beautify-css.js"></script>
+<script type="text/javascript" src="../assets/lib/js-beautify/js/lib/beautify-html.js"></script>
+
+<script type="text/javascript">
+    $('pre code').each(function (i, block) {
+        hljs.highlightBlock(block);
+    });
+</script>
+</body>
+</html>

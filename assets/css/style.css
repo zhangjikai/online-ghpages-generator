@@ -112,10 +112,22 @@ nav a#openup {
   zoom: 1;
 }
 /* Upload */
+/*@media screen and (min-width: 862px) {
+  #upload {
+    width: 862px;
+    margin: 0 auto;
+  }
+}
+
+@media screen and (max-width: 861px){
+  #upload {
+    width: auto;
+  }
+}*/
 #upload {
   width: auto;
   z-index: 3;
-  margin-top: 58px;
+  margin: 58px 10px 10px 10px;
   position: relative;
   background: #F5F7FA;
   border: 2px dashed #ddd;

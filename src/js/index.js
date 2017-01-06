@@ -23,6 +23,12 @@
     var hasTocTag = false;
     var minLevel = 5;
 
+    var handleHeading = false;
+
+    var ghPageConfig = {};
+
+    var footerMsg = {};
+
     var dsConfig = {
         "key": "test",
         "title": "test",
@@ -35,6 +41,7 @@
     var Constants = {
         highlight: "highlight",
         prism: "prism",
+        syntaxhigh: "syntaxhigh",
         mdName: "mdName",
         mdContent: "mdContent",
         tocTag: "<!-- toc -->",
@@ -63,6 +70,7 @@
         echarts: false
     };
 
+
     var renderer = new marked.Renderer();
 
     /* Todo列表 */
@@ -77,26 +85,64 @@
         }
     };
 
+
+    var originalHeading = renderer.heading;
+
     renderer.heading = function (text, level) {
-        var slug = text.toLowerCase().replace(/[\s]+/g, '-');
-        if (tocStr.indexOf(slug) != -1) {
-            slug += "-" + tocDumpIndex;
-            tocDumpIndex++;
+        if (handleHeading) {
+            var slug = text.toLowerCase().replace(/[\s]+/g, '-');
+            if (tocStr.indexOf(slug) != -1) {
+                slug += "-" + tocDumpIndex;
+                tocDumpIndex++;
+            }
+
+            tocStr += slug;
+            toc.push({
+                level: level,
+                slug: slug,
+                title: text
+            });
+
+            return "<h" + level + " id=\"" + slug + "\"><a href=\"#" + slug + "\" class=\"anchor\">" + '' +
+                '<svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>' +
+                '' + "</a>" + text + "</h" + level + ">";
+        } else {
+            var slug = text.toLowerCase().replace(/[\s]+/g, '-');
+            if (tocStr.indexOf(slug) != -1) {
+                slug += "-" + tocDumpIndex;
+                tocDumpIndex++;
+            }
+
+            tocStr += slug;
+            toc.push({
+                level: level,
+                slug: slug,
+                title: text
+            });
+
+            return "<h" + level + " id=\"" + slug + "\"><a href=\"#" + slug + "\">" + "</a>" + text + "</h" + level + ">";
         }
-
-        tocStr += slug;
-        toc.push({
-            level: level,
-            slug: slug,
-            title: text
-        });
-
-        return "<h" + level + " id=\"" + slug + "\"><a href=\"#" + slug + "\" class=\"anchor\">" + '' +
-            '<svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>' +
-            '' + "</a>" + text + "</h" + level + ">";
     };
 
-    var originalCodeFun = renderer.code;
+    //var originalCodeFun = renderer.code;
+
+    var customCode = function (code, lang) {
+
+
+        if (Setting.highlight == Constants.highlight) {
+            return "<pre><code class='" + lang +
+                "'>" + code + "</code></pre>";
+        }
+
+        if (Setting.highlight == Constants.syntaxhigh) {
+            return "<pre  class=' brush: " + lang +
+                "; toolbar: false;'>" + code + "</pre>";
+        }
+
+        return "<pre><code class='language-" + lang +
+            "'>" + code + "</code></pre>";
+
+    };
     renderer.code = function (code, language) {
 
         switch (language) {
@@ -104,12 +150,12 @@
                 if (Setting.sd) {
                     return "<div class='diagram' id='diagram'>" + code + "</div>"
                 }
-                return originalCodeFun.call(this, code, language);
+                return customCode(code, language);
             case "mathjax":
                 if (Setting.mathjax || exportSetting.mathjax) {
                     return "<p>" + code + "</p>\n";
                 }
-                return originalCodeFun.call(this, code, language);
+                return customCode(code, language);
             case "duoshuo":
                 if (Setting.duoshuo) {
                     loadDuoshuoConfig(code);
@@ -119,12 +165,38 @@
                 if (Setting.echarts || exportSetting.echarts) {
                     return loadEcharts(code);
                 }
-                return originalCodeFun.call(this, code, language);
+                return customCode(code, language);
+
+            case "header":
+                loadGhPageConfig(code);
+                return "";
+            case "footer":
+                loadFooter(code);
+                return "";
             default :
-                return originalCodeFun.call(this, code, language);
+                return customCode(code, language);
         }
     };
 
+    function loadGhPageConfig(text) {
+        try {
+            ghPageConfig = eval("(" + text + ")");
+        } catch (e) {
+            console.log(e);
+            sweetAlert("出错了", "解析 header 配置出现错误，请检查语法", "error");
+
+        }
+    }
+
+    function loadFooter(text) {
+        try {
+            footerMsg = eval("(" + text + ")");
+        } catch (e) {
+            console.log(e);
+            sweetAlert("出错了", "解析 footer 配置出现错误，请检查语法", "error");
+
+        }
+    }
 
     function loadDuoshuoConfig(text) {
         try {
@@ -178,7 +250,9 @@
     }
 
     marked.setOptions({
-        renderer: renderer
+        renderer: renderer,
+        highlight: null
+
     });
 
     function refreshAuto() {
@@ -267,13 +341,100 @@
         echartData.length = 0;
     }
 
+
+    function processGhPageConfig() {
+        if (ghPageConfig.hasOwnProperty("title")) {
+            $("#page-title").text(ghPageConfig["title"]);
+        } else {
+            $("#page-title").text("No title");
+        }
+
+        if (ghPageConfig.hasOwnProperty("desc")) {
+            $("#page-desc").text(ghPageConfig["desc"]);
+        } else {
+            $("#page-desc").text("No description");
+        }
+
+        var linkArray = [];
+        if (ghPageConfig.hasOwnProperty("github")) {
+            linkArray.push({
+                order: 10,
+                "text": "View on Github",
+                "url": ghPageConfig["github"]
+            });
+        }
+
+        if (ghPageConfig.hasOwnProperty("zip")) {
+            linkArray.push({
+                order: 11,
+                "text": "Download .zip",
+                "url": ghPageConfig["zip"]
+            });
+        }
+
+        if (ghPageConfig.hasOwnProperty("tar")) {
+            linkArray.push({
+                order: 12,
+                "text": "Download .tar.gz",
+                "url": ghPageConfig["tar"]
+            });
+        }
+
+        var i, index;
+
+        if (ghPageConfig.hasOwnProperty("link") && ghPageConfig["link"] instanceof Array) {
+            var links = ghPageConfig["link"];
+
+            links.forEach(function (link) {
+                if (!link.hasOwnProperty("order")) {
+                    link.order = 10000;
+                }
+
+                index = 0;
+                for (i = 0; i < linkArray.length; i++) {
+                    if (link.order < linkArray[i].order) {
+                        break;
+                    }
+                    index++;
+                }
+
+                for (i = linkArray.length - 1; i >= index; i--) {
+                    linkArray[i + 1] = linkArray[i];
+                }
+                linkArray[index] = link;
+                console.log(linkArray)
+            });
+        }
+
+        var aContent;
+        $("#page-header").children('a').remove();
+        linkArray.forEach(function (link) {
+            aContent = '<a class="btn" href="' + link.url + '">' + link.text + '</a>'
+            $("#page-header").append(aContent);
+        });
+    }
+
+    function processFooter() {
+        if(footerMsg.hasOwnProperty("owner")) {
+            $("#owner").html(footerMsg.owner);
+        }
+
+        if(footerMsg.hasOwnProperty("credits")) {
+            $("#credits").html(footerMsg.credits);
+        }
+    }
+
     function processMdContent(content) {
 
         try {
             resetBeforeProcess();
             calTocStart(content);
             setDsConfig(mdName);
+            //Setting.highlight = Constants.syntaxhigh;
             $("#content").html(marked(content));
+            processGhPageConfig();
+            processFooter();
+            //console.log(marked(content))
 
             replaceImage();
 
@@ -282,9 +443,13 @@
             }
 
             if (Setting.highlight == Constants.highlight) {
+
                 $('pre code').each(function (i, block) {
                     hljs.highlightBlock(block);
                 });
+
+            } else if (Setting.highlight == Constants.syntaxhigh) {
+                SyntaxHighlighter.all()
             } else {
                 $("pre").addClass("line-numbers");
                 Prism.highlightAll();
@@ -319,12 +484,14 @@
                     chart.setOption(data.option);
                 });
             }
-        } catch(e) {
+        } catch (e) {
+            console.log(e);
             sweetAlert("出错了", "处理文件出现错误，请检查语法", "error");
         }
 
 
         $("#loader").css("display", "none");
+        $("#container").css("display", "block");
 
         collapseUpload();
     }
@@ -885,6 +1052,7 @@
         theme: 'classic', // Available themes: 'classic', 'sky', 'slate'
         animation: 'fade' // Available animations: 'fade', 'slide'
     });
+
 
     loadSetting();
     addSetting();
