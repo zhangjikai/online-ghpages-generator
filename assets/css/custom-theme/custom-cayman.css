@@ -7,7 +7,7 @@
   margin-top: 2em;
 }
 #container {
-  display: none;
+  visibility: hidden;
 }
 .task-list-item-checkbox {
   margin: 0 0.2em 0.25em -2.3em;
@@ -17,4 +17,7 @@
 [type="radio"] {
   box-sizing: border-box;
   padding: 0;
+}
+body {
+  width: 100%;
 }

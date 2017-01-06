@@ -21,9 +21,11 @@
 
     <!--<link rel="stylesheet" href="assets/css/markdown.css">-->
 
-    <link href="http://fonts.useso.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">
+    <!--<link href="http://fonts.useso.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="assets/theme/cayman/css/normalize.css">
-    <link rel="stylesheet" href="assets/theme/cayman/css/cayman.css">
+    <link rel="stylesheet" href="assets/theme/cayman/css/cayman.css">-->
+
+    <link rel="stylesheet" href="assets/theme/minimal/css/minimal.css">
     <link rel="stylesheet" href="assets/css/custom-theme/custom-cayman.css">
     <link href="http://cdn.bootcss.com/prism/9000.0.1/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet">
 
@@ -58,6 +60,7 @@
         <li><a href="javascript:void(0);" id="refresh">刷新</a></li>
         <li><a href="javascript:void(0);" id="clear">清除缓存</a></li>
         <li><a href="#setting" class="popup-modal" id="setting">设置</a></li>
+        <li><a href="#theme" class="popup-modal" id="theme">主题</a></li>
         <li><a href="https://github.com/zhangjikai/online-markdown-reader" target="_blank">Github</a></li>
     </ul>
 </nav>
@@ -81,6 +84,7 @@
         </div>-->
     </div>
 </div>
+<div id="upload-top"></div>
 <div id="upload">
 
     <i class="fa fa-minus-square  fa-2x" aria-hidden="true" id="fold" expand="true"></i>
@@ -91,32 +95,40 @@
     </div>
 </div>
 
+
 <div id="container">
 
+    <!-- cayman-->
 
-    <section class="page-header" id="page-header">
-        <h1 class="project-name" id="page-title"></h1>
+    <div id="cayman" class="div-hide">
 
-        <h2 class="project-tagline" id="page-desc"></h2>
-
-
-        <!--<a href="#" class="btn">View on GitHub</a>-->
-
-    </section>
+        <section class="page-header" id="cayman-page-header">
+        </section>
 
 
-    <section class="main-content">
-        <div id="content">
+        <section class="main-content">
+            <div id="cayman-content">
+            </div>
+
+            <footer class="site-footer">
+                <span class="site-footer-owner" id="cayman-owner"></span>
+                <span class="site-footer-credits" id="cayman-credits"></span>
+            </footer>
+        </section>
+
+    </div>
 
 
-        </div>
-
-        <footer class="site-footer">
-            <span class="site-footer-owner" id="owner"></span>
-
-            <span class="site-footer-credits" id="credits"></span>
+    <div class="wrapper" id="minimal" class="div-hide">
+        <header id="minimal-page-header">
+        </header>
+        <section id="minimal-content"></section>
+        <footer>
+            <p id="minimal-owner"></p>
+            <p id="minimal-credits"></p>
         </footer>
-    </section>
+    </div>
+
 
 </div>
 
@@ -221,7 +233,6 @@
             <label for="s_seq">Sequence Diagram</label>
             <input class="magic-checkbox custom-checkbox" type="checkbox" name="set" id="s_emoji" ref="emoji">
             <label for="s_emoji">Emoji</label>
-
             <input class="magic-checkbox custom-checkbox" type="checkbox" name="set" id="s_echart" ref="echarts">
             <label for="s_echart">ECharts</label>
         </div>
@@ -241,6 +252,24 @@
         </div>
 
     </div>
+
+</div>
+
+<div class="remodal remodal-custom" data-remodal-id="theme">
+    <button data-remodal-action="close" class="remodal-close custom-remodal-close"></button>
+
+    <div class="setting-section">
+        <div class="setting-title">
+            <span>主题</span>
+        </div>
+        <div class="setting-content">
+            <input class="magic-radio custom-radio" type="radio" name="theme" id="s_cayman">
+            <label for="s_cayman">Cayman</label>
+            <input class="magic-radio custom-radio" type="radio" name="theme" id="s_minimal">
+            <label for="s_minimal">Minimal</label>
+        </div>
+    </div>
+
 
 
 </div>
@@ -266,9 +295,6 @@
       }
     }
   });
-
-
-
 </script>
 <script type="text/javascript"
         src="http://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>

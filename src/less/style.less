@@ -13,11 +13,12 @@
 body {
   font: 14px/1.42857 "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
+  padding-top: 100px;
 }
 
-#content {
+/*#content {
   margin-top: 1em;
-}
+}*/
 
 nav {
   height: @nav-height;
@@ -28,7 +29,7 @@ nav {
   top: 0;
   left: 0;
   //padding-left: 20px;
-  z-index: 10;
+  z-index: 9999;
 
   .first-menu {
     margin-left: 2em;
@@ -58,6 +59,7 @@ nav {
     padding: 0;
     &:hover {
       color: @nav-text-color;
+      text-decoration: none;
       //background: #fff;
       //color: #444;
       //border-top: 3px solid #fff;
@@ -166,15 +168,27 @@ nav {
   }
 }*/
 
+#upload-top{
+  position: fixed;
+  background: #fff;
+  height: @upload-margin * 2 +  @thumb-upload-area-height + 4px;
+  width: 100%;
+  top:@nav-height;
+  z-index: 999;
+}
 
 #upload {
   width: auto;
-  z-index: 3;
-  margin: @nav-height + @upload-margin @upload-margin @upload-margin @upload-margin;
+  z-index: 1000;
+  //margin: @nav-height + @upload-margin @upload-margin @upload-margin @upload-margin;
 
-  position: relative;
+  position: fixed;
   background: #F5F7FA;
   border: 2px dashed #ddd;
+  left: @upload-margin;
+  right: @upload-margin;
+  top: @nav-height + @upload-margin;
+
 }
 
 #fold {
@@ -406,3 +420,8 @@ nav {
     height: 6px;
   }
 }
+
+.div-hide{
+  display: none;
+}
+

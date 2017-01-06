@@ -29,6 +29,8 @@
 
     var footerMsg = {};
 
+    var themeContentTag = "";
+
     var dsConfig = {
         "key": "test",
         "title": "test",
@@ -50,6 +52,11 @@
 
     };
 
+    var Theme = {
+        cayman: "cayman",
+        minimal: "minimal"
+    };
+
     var Setting = {
         compressImg: true,
         genToc: true,
@@ -62,8 +69,13 @@
         backtop: true,
         duoshuo: true,
         echarts: true,
-        format: true
+        format: true,
+        theme: Theme.cayman
     };
+
+    console.log("Setting.theme", Setting.theme)
+
+
 
     var exportSetting = {
         mathjax: false,
@@ -181,8 +193,9 @@
     function loadGhPageConfig(text) {
         try {
             ghPageConfig = eval("(" + text + ")");
+
         } catch (e) {
-            console.log(e);
+
             sweetAlert("出错了", "解析 header 配置出现错误，请检查语法", "error");
 
         }
@@ -269,8 +282,8 @@
         mdName = delExtension(targetFile.name);
 
         reader.onload = function (e) {
-            document.getElementById("content").innerHTML = marked(e.target.result);
-            MathJax.Hub.Queue(["Typeset", MathJax.Hub, "content"]);
+            document.getElementById(themeContentTag).innerHTML = marked(e.target.result);
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, themeContentTag]);
         }
     }
 
@@ -342,19 +355,37 @@
     }
 
 
-    function processGhPageConfig() {
+    function handleGHpage() {
+        console.log(Setting.theme)
+        switch (Setting.theme) {
+            case Theme.cayman:
+                headerCayman();
+
+                break;
+            case Theme.minimal:
+                headerMinimal();
+                break;
+        }
+        processFooter();
+    }
+
+    function headerCayman() {
+
+        var headerId = "#cayman-page-header";
+        var tmpText = "";
+        var tmpHtml = "";
+        $(headerId).html("");
         if (ghPageConfig.hasOwnProperty("title")) {
-            $("#page-title").text(ghPageConfig["title"]);
-        } else {
-            $("#page-title").text("No title");
+            tmpText = ghPageConfig["title"];
+            tmpHtml = "<h1 class='project-name'>" + tmpText + "</h1>";
+            $(headerId).append(tmpHtml);
         }
 
         if (ghPageConfig.hasOwnProperty("desc")) {
-            $("#page-desc").text(ghPageConfig["desc"]);
-        } else {
-            $("#page-desc").text("No description");
+            tmpText = ghPageConfig["desc"];
+            tmpHtml = "<h2 class='project-tagline'>" + tmpText + "</h2>";
+            $(headerId).append(tmpHtml);
         }
-
         var linkArray = [];
         if (ghPageConfig.hasOwnProperty("github")) {
             linkArray.push({
@@ -402,25 +433,89 @@
                     linkArray[i + 1] = linkArray[i];
                 }
                 linkArray[index] = link;
-                console.log(linkArray)
+
             });
         }
 
         var aContent;
-        $("#page-header").children('a').remove();
+        $(headerId).children('a').remove();
+
         linkArray.forEach(function (link) {
             aContent = '<a class="btn" href="' + link.url + '">' + link.text + '</a>'
-            $("#page-header").append(aContent);
+            $(headerId).append(aContent);
         });
     }
 
-    function processFooter() {
-        if(footerMsg.hasOwnProperty("owner")) {
-            $("#owner").html(footerMsg.owner);
+
+    function headerMinimal() {
+
+        var headerId = "#minimal-page-header";
+        $(headerId).html("");
+        var tmpText = "";
+        var tmpHtml = "";
+        var tmpObj;
+
+
+        if (ghPageConfig.hasOwnProperty("title")) {
+            //$("#page-title").append(ghPageConfig["title"]);
+            tmpText = ghPageConfig["title"];
+            tmpHtml = "<h1>" + tmpText + "</h1>";
+            $(headerId).append(tmpHtml);
         }
 
-        if(footerMsg.hasOwnProperty("credits")) {
-            $("#credits").html(footerMsg.credits);
+        if (ghPageConfig.hasOwnProperty("desc")) {
+            tmpText = ghPageConfig["desc"];
+            tmpHtml = "<p>" + tmpText + "</p>";
+            $(headerId).append(tmpHtml);
+        }
+
+        if (ghPageConfig.hasOwnProperty("project")) {
+            tmpObj = ghPageConfig["project"];
+            tmpHtml = '<p class="github"> <a href="' + tmpObj.url + '">View the Project on GitHub<small>' + tmpObj.name + '</small></a></p>';
+            $(headerId).append(tmpHtml);
+        }
+
+        var linkArray = [];
+
+        if (ghPageConfig.hasOwnProperty("zip")) {
+            linkArray.push({
+                "text": "Download <strong>ZIP File</strong>",
+                "url": ghPageConfig["zip"]
+            });
+        }
+
+        if (ghPageConfig.hasOwnProperty("tar")) {
+            linkArray.push({
+                "text": "Download <strong>TAR Ball</strong>",
+                "url": ghPageConfig["tar"]
+            });
+        }
+
+        if (ghPageConfig.hasOwnProperty("github")) {
+            linkArray.push({
+                "text": "Fork On <strong>GitHub</strong>",
+                "url": ghPageConfig["github"]
+            });
+        }
+
+        console.log($(headerId))
+        if (linkArray.length > 1) {
+            var ul = $("<ul />").appendTo($(headerId));
+            linkArray.forEach(function (link) {
+                tmpHtml = '<li><a href="' + link.url + '">' + link.text + '</a></li>';
+                ul.append(tmpHtml);
+            });
+        }
+    }
+
+
+    function processFooter() {
+        if (footerMsg.hasOwnProperty("owner")) {
+            $("#" + Setting.theme + "-owner").html(footerMsg.owner);
+        }
+
+        if (footerMsg.hasOwnProperty("credits")) {
+            $("#" + Setting.theme + "-credits").html(footerMsg.credits);
         }
     }
 
@@ -430,11 +525,17 @@
             resetBeforeProcess();
             calTocStart(content);
             setDsConfig(mdName);
+            $("#cayman").css("display", "block");
             //Setting.highlight = Constants.syntaxhigh;
-            $("#content").html(marked(content));
-            processGhPageConfig();
-            processFooter();
+            themeContentTag = Setting.theme + "-content";
+            $("#" + themeContentTag).html(marked(content));
+            //processGhPageConfig();
+
+            //headerMinimal();
+            //processFooter();
             //console.log(marked(content))
+
+            handleGHpage();
 
             replaceImage();
 
@@ -455,6 +556,7 @@
                 Prism.highlightAll();
             }
 
+
             if (Setting.mathjax) {
 
                 if (MathJax.Extension["TeX/AMSmath"] != null) {
@@ -462,11 +564,11 @@
                     MathJax.Extension["TeX/AMSmath"].labels = {};
                 }
 
-                MathJax.Hub.Queue(["Typeset", MathJax.Hub, "content"]);
+                MathJax.Hub.Queue(["Typeset", MathJax.Hub, themeContentTag]);
             }
 
             if (Setting.emoji) {
-                emojify.run(document.getElementById('content'))
+                emojify.run(document.getElementById(themeContentTag))
             }
 
             if (Setting.sd) {
@@ -491,7 +593,8 @@
 
 
         $("#loader").css("display", "none");
-        $("#container").css("display", "block");
+        $("#container").css("visibility", "visible");
+
 
         collapseUpload();
     }
@@ -507,7 +610,9 @@
     function clear() {
         localStorage.removeItem(Constants.mdName);
         localStorage.removeItem(Constants.mdContent);
-        window.location.reload();
+        var url = window.location.href.replace("#theme", "#");
+        window.location.href = url;
+        //window.location.reload();
     }
 
     function saveMdFile(name, content) {
@@ -723,11 +828,11 @@
         }
 
         if (hasTocTag) {
-            var content = $("#content").html();
+            var content = $("#" + themeContentTag).html();
             content = content.replace(Constants.tocTag, tocHtml);
-            $("#content").html(content);
+            $("#" + themeContentTag).html(content);
         } else {
-            $("#content").prepend(tocHtml);
+            $("#" + themeContentTag).prepend(tocHtml);
         }
     }
 
@@ -812,12 +917,13 @@
             saveSetting();
         });
 
-        if (Setting["highlight"] == Constants.highlight) {
-            $("#s_highlight").prop("checked", true);
-        } else {
-            $("#s_prism").prop("checked", true);
-        }
+        //if (Setting["highlight"] == Constants.highlight) {
+        //    $("#s_highlight").prop("checked", true);
+        //} else {
+        //    $("#s_prism").prop("checked", true);
+        //}
 
+        $("#s_" + Setting["highlight"]).prop("checked", true);
         $("[name='high']").each(function (index, ele) {
             $(ele).change(function (e) {
                 var text = $(ele).prop("id");
@@ -828,7 +934,41 @@
                 }
                 saveSetting();
             })
-        })
+        });
+
+
+        $("#s_" + Setting["theme"]).prop("checked", true);
+
+        $("[name='theme']").each(function (index, ele) {
+            $(ele).change(function (e) {
+                var text = $(ele).prop("id").substring(2);
+                Setting["theme"] = text;
+                //console.log(text);
+                //if (text == "s_highlight") {
+                //    Setting["highlight"] = Constants.highlight;
+                //} else {
+                //    Setting["highlight"] = Constants.prism;
+                //}
+                //saveSetting();
+                //
+                //localStorage.removeItem(Constants.mdName);
+                //localStorage.removeItem(Constants.mdContent);
+
+                localStorage.setItem(Constants.setting, JSON.stringify(Setting));
+                clear();
+
+
+            })
+        });
+        //switch (Setting.theme) {
+        //    case Theme.cayman:
+        //        $("#s_" + Theme.cayman).prop("checked", true);
+        //        break;
+        //    case Theme.minimal:
+        //        $("#s_" + Theme)
+        //}
+
+
 
     }
 
@@ -865,7 +1005,7 @@
         }
 
         processMdContent(mdContent);
-        htmlContent = $("#content").html();
+        htmlContent = $("#" + themeContentTag).html();
 
         Setting.mathjax = preMajax;
         Setting.echarts = preEcharts;

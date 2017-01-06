@@ -2,10 +2,11 @@
 body {
   font: 14px/1.42857 "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
+  padding-top: 100px;
 }
-#content {
+/*#content {
   margin-top: 1em;
-}
+}*/
 nav {
   height: 48px;
   width: 100%;
@@ -14,7 +15,7 @@ nav {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 10;
+  z-index: 9999;
   /*li:hover {
     background-color: @nav-hover;
   }*/
@@ -43,6 +44,7 @@ nav a {
 }
 nav a:hover {
   color: #fff;
+  text-decoration: none;
 }
 nav a#openup {
   display: none;
@@ -124,13 +126,23 @@ nav a#openup {
     width: auto;
   }
 }*/
+#upload-top {
+  position: fixed;
+  background: #fff;
+  height: 52px;
+  width: 100%;
+  top: 48px;
+  z-index: 999;
+}
 #upload {
   width: auto;
-  z-index: 3;
-  margin: 58px 10px 10px 10px;
-  position: relative;
+  z-index: 1000;
+  position: fixed;
   background: #F5F7FA;
   border: 2px dashed #ddd;
+  left: 10px;
+  right: 10px;
+  top: 58px;
 }
 #fold {
   display: block;
@@ -323,4 +335,7 @@ nav a#openup {
   top: 5px;
   width: 6px;
   height: 6px;
+}
+.div-hide {
+  display: none;
 }
