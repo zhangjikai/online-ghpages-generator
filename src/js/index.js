@@ -27,7 +27,7 @@
 
     var ghPageConfig = {};
 
-    var footerMsg = {};
+    /*var footerMsg = {};*/
 
     var themeContentTag = "";
 
@@ -74,7 +74,6 @@
     };
 
     console.log("Setting.theme", Setting.theme)
-
 
 
     var exportSetting = {
@@ -179,12 +178,12 @@
                 }
                 return customCode(code, language);
 
-            case "header":
+            case "ghpages":
                 loadGhPageConfig(code);
                 return "";
-            case "footer":
-                loadFooter(code);
-                return "";
+            //case "footer":
+            //    loadFooter(code);
+            //    return "";
             default :
                 return customCode(code, language);
         }
@@ -201,15 +200,15 @@
         }
     }
 
-    function loadFooter(text) {
-        try {
-            footerMsg = eval("(" + text + ")");
-        } catch (e) {
-            console.log(e);
-            sweetAlert("出错了", "解析 footer 配置出现错误，请检查语法", "error");
-
-        }
-    }
+    //function loadFooter(text) {
+    //    try {
+    //        footerMsg = eval("(" + text + ")");
+    //    } catch (e) {
+    //        console.log(e);
+    //        sweetAlert("出错了", "解析 footer 配置出现错误，请检查语法", "error");
+    //
+    //    }
+    //}
 
     function loadDuoshuoConfig(text) {
         try {
@@ -510,12 +509,12 @@
 
 
     function processFooter() {
-        if (footerMsg.hasOwnProperty("owner")) {
-            $("#" + Setting.theme + "-owner").html(footerMsg.owner);
+        if (ghPageConfig.hasOwnProperty("footer") &&  ghPageConfig["footer"].hasOwnProperty("owner")) {
+            $("#" + Setting.theme + "-owner").html(ghPageConfig.footer.owner);
         }
 
-        if (footerMsg.hasOwnProperty("credits")) {
-            $("#" + Setting.theme + "-credits").html(footerMsg.credits);
+        if (ghPageConfig.hasOwnProperty("footer") &&  ghPageConfig["footer"].hasOwnProperty("credits")) {
+            $("#" + Setting.theme + "-credits").html(ghPageConfig.footer.credits);
         }
     }
 
@@ -525,7 +524,7 @@
             resetBeforeProcess();
             calTocStart(content);
             setDsConfig(mdName);
-            $("#cayman").css("display", "block");
+
             //Setting.highlight = Constants.syntaxhigh;
             themeContentTag = Setting.theme + "-content";
             $("#" + themeContentTag).html(marked(content));
@@ -612,7 +611,7 @@
         localStorage.removeItem(Constants.mdContent);
         var url = window.location.href.replace("#theme", "#");
         window.location.href = url;
-        //window.location.reload();
+        window.location.reload();
     }
 
     function saveMdFile(name, content) {
@@ -871,6 +870,9 @@
         if (sname != null) {
             dsConfig.short_name = sname;
         }
+
+        $("#" + Setting.theme).css("display", "block");
+        $("[prefix='"+Setting.theme+"']").prop("disabled", false);
     }
 
     function saveSetting() {
@@ -924,6 +926,7 @@
         //}
 
         $("#s_" + Setting["highlight"]).prop("checked", true);
+
         $("[name='high']").each(function (index, ele) {
             $(ele).change(function (e) {
                 var text = $(ele).prop("id");
@@ -941,6 +944,7 @@
 
         $("[name='theme']").each(function (index, ele) {
             $(ele).change(function (e) {
+                //$("#" + Setting["theme"]).css("display", "none");
                 var text = $(ele).prop("id").substring(2);
                 Setting["theme"] = text;
                 //console.log(text);
@@ -967,7 +971,6 @@
         //    case Theme.minimal:
         //        $("#s_" + Theme)
         //}
-
 
 
     }
@@ -1193,11 +1196,9 @@
         animation: 'fade' // Available animations: 'fade', 'slide'
     });
 
-
     loadSetting();
     addSetting();
     loadCacheFile();
-
 
 }());
 
