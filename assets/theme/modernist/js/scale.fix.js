@@ -15,7 +15,3 @@ function gestureStart() {
     }
   }
 }
-
-function print11() {
-    console.log("loading");
-}

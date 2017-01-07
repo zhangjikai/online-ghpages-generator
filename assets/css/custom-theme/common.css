@@ -1,0 +1,20 @@
+.diagram {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+#ds-thread {
+  margin-top: 2em;
+}
+#container {
+  visibility: hidden;
+}
+.task-list-item-checkbox {
+  margin: 0 0.2em 0.25em -2.3em;
+  vertical-align: middle;
+}
+[type="checkbox"],
+[type="radio"] {
+  box-sizing: border-box;
+  padding: 0;
+}

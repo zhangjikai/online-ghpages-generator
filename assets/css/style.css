@@ -1,7 +1,7 @@
 /*nav*/
 body {
-  font: 14px/1.42857 "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background: #fff;
+  /*font: 14px/1.42857 "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: #fff;*/
   padding-top: 100px;
 }
 /*#content {
@@ -16,6 +16,7 @@ nav {
   top: 0;
   left: 0;
   z-index: 9999;
+  font: 14px/1.42857 "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
   /*li:hover {
     background-color: @nav-hover;
   }*/
@@ -231,6 +232,7 @@ nav a#openup {
   margin: 0;
 }
 .remodal-custom {
+  font: 14px/1.42857 "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding: 20px;
   max-height: 350px;
   overflow: auto;
@@ -338,4 +340,7 @@ nav a#openup {
 }
 .div-hide {
   display: none;
+}
+#modernist {
+  padding-top: 50px;
 }

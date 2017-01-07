@@ -54,7 +54,8 @@
 
     var Theme = {
         cayman: "cayman",
-        minimal: "minimal"
+        minimal: "minimal",
+        modernist: "modernist"
     };
 
     var Setting = {
@@ -364,6 +365,9 @@
             case Theme.minimal:
                 headerMinimal();
                 break;
+            case Theme.modernist:
+                headerModernist();
+                break;
         }
         processFooter();
     }
@@ -470,7 +474,7 @@
 
         if (ghPageConfig.hasOwnProperty("project")) {
             tmpObj = ghPageConfig["project"];
-            tmpHtml = '<p class="github"> <a href="' + tmpObj.url + '">View the Project on GitHub<small>' + tmpObj.name + '</small></a></p>';
+            tmpHtml = '<p> <a href="' + tmpObj.url + '">View the Project on GitHub<small>' + tmpObj.name + '</small></a></p>';
             $(headerId).append(tmpHtml);
         }
 
@@ -497,7 +501,6 @@
             });
         }
 
-        console.log($(headerId))
         if (linkArray.length > 1) {
             var ul = $("<ul />").appendTo($(headerId));
             linkArray.forEach(function (link) {
@@ -508,12 +511,71 @@
     }
 
 
+    function headerModernist() {
+        var headerId = "#modernist-page-header";
+        $(headerId).html("");
+        var tmpText = "";
+        var tmpHtml = "";
+        var tmpObj;
+
+
+        if (ghPageConfig.hasOwnProperty("title")) {
+            //$("#page-title").append(ghPageConfig["title"]);
+            tmpText = ghPageConfig["title"];
+            tmpHtml = "<h1>" + tmpText + "</h1>";
+            $(headerId).append(tmpHtml);
+        }
+
+        if (ghPageConfig.hasOwnProperty("desc")) {
+            tmpText = ghPageConfig["desc"];
+            tmpHtml = "<p>" + tmpText + "</p>";
+            $(headerId).append(tmpHtml);
+        }
+
+        if (ghPageConfig.hasOwnProperty("project")) {
+            tmpObj = ghPageConfig["project"];
+            tmpHtml = '<p class="view"> <a href="' + tmpObj.url + '">View the Project on GitHub<small>' + tmpObj.name + '</small></a></p>';
+            $(headerId).append(tmpHtml);
+        }
+
+        var linkArray = [];
+
+        if (ghPageConfig.hasOwnProperty("zip")) {
+            linkArray.push({
+                "text": "Download <strong>ZIP File</strong>",
+                "url": ghPageConfig["zip"]
+            });
+        }
+
+        if (ghPageConfig.hasOwnProperty("tar")) {
+            linkArray.push({
+                "text": "Download <strong>TAR Ball</strong>",
+                "url": ghPageConfig["tar"]
+            });
+        }
+
+        if (ghPageConfig.hasOwnProperty("github")) {
+            linkArray.push({
+                "text": "Fork On <strong>GitHub</strong>",
+                "url": ghPageConfig["github"]
+            });
+        }
+
+        if (linkArray.length > 1) {
+            var ul = $("<ul />").appendTo($(headerId));
+            linkArray.forEach(function (link) {
+                tmpHtml = '<li><a href="' + link.url + '">' + link.text + '</a></li>';
+                ul.append(tmpHtml);
+            });
+        }
+    }
+
     function processFooter() {
-        if (ghPageConfig.hasOwnProperty("footer") &&  ghPageConfig["footer"].hasOwnProperty("owner")) {
+        if (ghPageConfig.hasOwnProperty("footer") && ghPageConfig["footer"].hasOwnProperty("owner")) {
             $("#" + Setting.theme + "-owner").html(ghPageConfig.footer.owner);
         }
 
-        if (ghPageConfig.hasOwnProperty("footer") &&  ghPageConfig["footer"].hasOwnProperty("credits")) {
+        if (ghPageConfig.hasOwnProperty("footer") && ghPageConfig["footer"].hasOwnProperty("credits")) {
             $("#" + Setting.theme + "-credits").html(ghPageConfig.footer.credits);
         }
     }
@@ -849,6 +911,27 @@
         $("#loader").css("display", "none");
     }
 
+    function addThemeJs() {
+        console.log(Setting.theme);
+        switch (Setting.theme) {
+            case Theme.minimal:
+                console.log(222);
+                var filename = "/assets/theme/minimal/js/scale.fix.js"
+                var fileRef = document.createElement('script');
+                fileRef.setAttribute("type", "text/javascript");
+                fileRef.setAttribute("src", filename);
+                fileRef.onload = function () {
+                    console.log(111);
+                    //print11();
+                };
+                document.body.appendChild(fileRef);
+
+                break;
+        }
+
+
+    }
+
     function loadSetting() {
         var tmpSetting = localStorage.getItem(Constants.setting);
         if (tmpSetting == null) {
@@ -871,8 +954,16 @@
             dsConfig.short_name = sname;
         }
 
+        //Setting.theme = Theme.modernist;
+
         $("#" + Setting.theme).css("display", "block");
-        $("[prefix='"+Setting.theme+"']").prop("disabled", false);
+
+        //document.getElementById('test-mod').disabled = true;
+
+
+        $("[prefix*='" + Setting.theme + "']").prop("rel", "stylesheet");
+        $("[prefix*='" + Setting.theme + "']").prop("disabled", false);
+        addThemeJs();
     }
 
     function saveSetting() {
@@ -1196,6 +1287,8 @@
         animation: 'fade' // Available animations: 'fade', 'slide'
     });
 
+
+    $('[custom-type="custom"]').prop("disabled", true);
     loadSetting();
     addSetting();
     loadCacheFile();

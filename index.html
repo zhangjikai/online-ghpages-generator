@@ -6,8 +6,19 @@
     <title>Online Markdown Reader</title>
 
 
-    <link rel="stylesheet" href="assets/lib/highlightjs/styles/github.css">
-    <link href="http://cdn.bootcss.com/prism/9000.0.1/themes/prism.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/lib/highlightjs/styles/github.css" custom-type="custom" prefix="caymanminimal"
+          disabled="true">
+    <link href="http://cdn.bootcss.com/prism/9000.0.1/themes/prism.min.css" rel="stylesheet" custom-type="custom"
+          prefix="caymanminimal" disabled="true">
+
+
+    <!-- modernist -->
+    <link rel="alternate stylesheet" href="assets/lib/highlightjs/styles/agate.css" custom-type="custom"
+          prefix="modernist" disabled="true">
+    <link href="http://cdn.bootcss.com/prism/9000.0.1/themes/prism-twilight.min.css" rel="alternate stylesheet"
+          custom-type="custom" prefix="modernist" disabled="true">
+
+
     <link rel="stylesheet" href="assets/lib/SyntaxHighlighter/styles/shCore.css">
     <link rel="stylesheet" href="assets/lib/SyntaxHighlighter/styles/shCoreDefault.css">
     <link rel="stylesheet" href="assets/lib/font-awesome/css/font-awesome.min.css">
@@ -21,12 +32,26 @@
 
     <!--<link rel="stylesheet" href="assets/css/markdown.css">-->
 
-    <link href="http://fonts.useso.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css" disable="true" prefix="cayman">
-    <link rel="stylesheet" href="assets/theme/cayman/css/normalize.css" disabled="true" prefix="cayman">
-    <link rel="stylesheet" href="assets/theme/cayman/css/cayman.css" disabled="true" prefix="cayman">
+    <!-- cayman -->
+    <!--<link href="http://fonts.useso.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css" prefix="cayman">-->
+    <link rel="stylesheet" href="assets/theme/cayman/css/normalize.css" custom-type="custom" prefix="cayman"
+          disabled="true">
+    <link rel="stylesheet" href="assets/theme/cayman/css/cayman.css" custom-type="custom" prefix="cayman"
+          disabled="true">
 
-    <link rel="stylesheet" href="assets/theme/minimal/css/minimal.css" disabled="true" prefix="minimal">
-    <link rel="stylesheet" href="assets/css/custom-theme/custom-cayman.css">
+    <!-- minimal-->
+    <link rel="stylesheet" href="assets/theme/minimal/css/minimal.css" custom-type="custom" prefix="minimal"
+          disabled="true">
+    <link rel="stylesheet" href="assets/css/custom-theme/custom-minimal.css" custom-type="custom" prefix="minimal"
+          disabled="true">
+
+    <!-- modernist -->
+    <link rel="stylesheet" href="assets/theme/modernist/css/modernist.css" custom-type="custom" prefix="modernist"
+          disabled="true">
+    <link rel="stylesheet" href="assets/css/custom-theme/custom-modernist.css" custom-type="custom" prefix="modernist"
+          disabled="true">
+
+    <link rel="stylesheet" href="assets/css/custom-theme/common.css">
     <link href="http://cdn.bootcss.com/prism/9000.0.1/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="assets/css/style.css">
@@ -99,7 +124,6 @@
 <div id="container">
 
     <!-- cayman-->
-
     <div id="cayman" class="div-hide">
 
         <section class="page-header" id="cayman-page-header">
@@ -118,14 +142,32 @@
 
     </div>
 
+    <!-- minimal -->
+    <div id="minimal" class="div-hide">
+        <div class="wrapper">
+            <header id="minimal-page-header">
+            </header>
+            <section id="minimal-content"></section>
+            <footer>
+                <p id="minimal-owner"></p>
 
-    <div class="wrapper" id="minimal" class="div-hide">
-        <header id="minimal-page-header">
-        </header>
-        <section id="minimal-content"></section>
+                <p id="minimal-credits"></p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- modernist -->
+    <div id="modernist" class="div-hide">
+        <div class="wrapper">
+            <header id="modernist-page-header">
+            </header>
+            <section id="modernist-content"></section>
+
+        </div>
         <footer>
-            <p id="minimal-owner"></p>
-            <p id="minimal-credits"></p>
+            <p id="modernist-owner"></p>
+
+            <p id="modernist-credits"></p>
         </footer>
     </div>
 
@@ -267,9 +309,10 @@
             <label for="s_cayman">Cayman</label>
             <input class="magic-radio custom-radio" type="radio" name="theme" id="s_minimal">
             <label for="s_minimal">Minimal</label>
+            <input class="magic-radio custom-radio" type="radio" name="theme" id="s_modernist">
+            <label for="s_modernist">Modernist</label>
         </div>
     </div>
-
 
 
 </div>
@@ -295,6 +338,7 @@
       }
     }
   });
+
 </script>
 <script type="text/javascript"
         src="http://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
