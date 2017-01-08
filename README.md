@@ -3,6 +3,7 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
+
 - [功能](#%E5%8A%9F%E8%83%BD)
 - [示例](#%E7%A4%BA%E4%BE%8B)
 - [主题](#%E4%B8%BB%E9%A2%98)
@@ -10,6 +11,9 @@
   - [主题相关配置](#%E4%B8%BB%E9%A2%98%E7%9B%B8%E5%85%B3%E9%85%8D%E7%BD%AE)
     - [Cayman](#cayman)
     - [Minimal 和 Modernist](#minimal-%E5%92%8C-modernist)
+- [评论](#%E8%AF%84%E8%AE%BA)
+  - [多说](#%E5%A4%9A%E8%AF%B4)
+  - [Disqus](#disqus)
 - [扩展语法](#%E6%89%A9%E5%B1%95%E8%AF%AD%E6%B3%95)
   - [Todo列表](#todo%E5%88%97%E8%A1%A8)
   - [Mathjax](#mathjax)
@@ -18,8 +22,6 @@
   - [ECharts](#echarts)
     - [配置](#%E9%85%8D%E7%BD%AE)
   - [自定义扩展](#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%89%A9%E5%B1%95)
-- [导出](#%E5%AF%BC%E5%87%BA)
-  - [多说评论框](#%E5%A4%9A%E8%AF%B4%E8%AF%84%E8%AE%BA%E6%A1%86)
 - [其他说明](#%E5%85%B6%E4%BB%96%E8%AF%B4%E6%98%8E)
   - [Markdown 文件解析](#markdown-%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90)
   - [Markdown 样式](#markdown-%E6%A0%B7%E5%BC%8F)
@@ -79,7 +81,7 @@
 
 ### 主题相关配置
 #### Cayman
-在 Cayman 主题中，可以添加新的链接。如下所示，其中 order 是，`github` 链接默认的数值是 `10`, `zip` 链接的默认是
+在 Cayman 主题中，可以添加新的链接。如下所示:
 
 <pre><code>```ghpages
 {
@@ -108,6 +110,32 @@
     	url: "#",
     	name: "zhangjikai/online-ghpages-generator"
     },
+}
+```
+</code></pre>
+
+## 评论
+### 多说
+通过在 Markdown 文件中添加下面代码来配置多说
+
+<pre lang="no-highlight"><code>```comment
+{
+    "key": "filename",
+    "title": "filename",
+    "url": "filename.html",
+    "short_name": "shortname"
+}
+```
+</code></pre>
+
+### Disqus
+通过在 Markdown 文件中添加下面代码来配置Dsiqus，这里的 `url` 要使用完整的地址
+
+<pre lang="no-highlight"><code>```comment
+{
+    "key": "filename",
+    "url": "http://xxx.xxx/filename.html",
+    "short_name": "shortname"
 }
 ```
 </code></pre>
@@ -256,19 +284,6 @@ $(".diagram").sequenceDiagram({theme: 'simple'});
 
 如果不需要某个扩展功能，可以停用该功能，以加快文件渲染的速度。
 
-## 导出
-### 多说评论框
-通过在 Markdown 文件中添加下面代码来配置多说
-
-<pre lang="no-highlight"><code>```duoshuo
-{
-    "key": "filename",
-    "title": "filename",
-    "url": "filename.html",
-    "short_name": "shortname"
-}
-```
-</code></pre>
 
 ## 其他说明
 
