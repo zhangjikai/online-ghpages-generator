@@ -50,7 +50,7 @@
 
 ## 示例
 [示例文件](demo/sample.md)    
-[示例预览](http://zhangjikai.com/markdown/sample.html)
+[效果预览](http://zhangjikai.com/page/index.html)
 
 ## 主题
 现在支持下面 6 种主题，以后会增加更多的主题。

@@ -1,6 +1,35 @@
 # Markdown Sample
 
+## Table of Contents
+
 <!-- toc -->
+
+```ghpages
+{
+    title: "Online gh-pages Generator",
+    desc: "Auto generate GitHub Page with different themes for input Markdown file",
+    github: "https://github.com/zhangjikai/online-ghpages-generator",
+    zip: "https://github.com/zhangjikai/online-ghpages-generator/zipball/master",
+    tar: "https://github.com/zhangjikai/online-ghpages-generator/tarball/master",
+    project: {
+        url: "https://github.com/zhangjikai/online-ghpages-generator",
+        name: "zhangjikai/online-ghpages-generator"
+    },
+    footer: {
+        owner: 'This project is maintained by <a href="http://github.com/zhangjikai">Zhang Jikai</a>', 
+        credits: 'Hosted on GitHub Pages — Theme by Architect theme by <a href="https://github.com/jasonlong">Jason Long</a>.'
+    }
+}
+```
+
+```comment
+{
+    "key": "architect",
+    "title": "Architect Page Demo",
+    "url": "http://zhangjikai.com/page/architect.html",
+    "short_name": "zhangjkblog"
+}
+```
 
 ## Heading
 ### H3
@@ -286,7 +315,7 @@ D-->>A: Dashed open arrow
         data:['意向','预购','成交']
     },
     toolbox: {
-        show : true,
+        show : false,
         feature : {
             mark : {show: true},
             dataView : {show: true, readOnly: false},
@@ -331,16 +360,6 @@ D-->>A: Dashed open arrow
             data:[1320, 1132, 601, 234, 120, 90, 20]
         }
     ]
-}
-```
-
-
-```duoshuo
-{
-    "key": "sample",
-    "title": "Markdown Sample",
-    "url": "/markdown/sample.html",
-    "short_name": "zhangjkblog"
 }
 ```
 
