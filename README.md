@@ -1,5 +1,5 @@
 # Online gh-pages generator
-在线将 Markdown 文件转换为不同主题的 GitHub Page 
+将 Markdown 文件转换为不同主题的 GitHub Page 网页
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
@@ -24,7 +24,6 @@
   - [自定义扩展](#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%89%A9%E5%B1%95)
 - [其他说明](#%E5%85%B6%E4%BB%96%E8%AF%B4%E6%98%8E)
   - [Markdown 文件解析](#markdown-%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90)
-  - [Markdown 样式](#markdown-%E6%A0%B7%E5%BC%8F)
   - [本地图片](#%E6%9C%AC%E5%9C%B0%E5%9B%BE%E7%89%87)
   - [目录](#%E7%9B%AE%E5%BD%95)
   - [缓存](#%E7%BC%93%E5%AD%98)
@@ -289,9 +288,6 @@ $(".diagram").sequenceDiagram({theme: 'simple'});
 
 ### Markdown 文件解析
 程序使用 [marked](https://github.com/chjj/marked) 解析文件。
-
-### Markdown 样式
-`Markdown` 的显示样式都在 `assets/css/markdown.css` 里，如果需要自定义样式，只需修改这个文件。
 
 ### 本地图片
 如果需要显示本地图片，需要手动的将图片上传一下（支持批量上传），程序使用 `FileReader` 读取上传的图片，然后将图片的本地路径替换为图片的内容。图片压缩对 `jpg` 文件效果较好，对于 `png` 文件效果较差。
