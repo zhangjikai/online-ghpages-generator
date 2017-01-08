@@ -1,31 +1,36 @@
-# Online markdown reader
-在线生成 GitHub Pages 
+# Online gh-pages generator
+在线将 Markdown 文件转换为不同主题的 GitHub Page 
+<!-- START doctoc -->
 
-<!-- toc -->
 
-- [功能](#%E5%8A%9F%E8%83%BD)
-- [示例](#%E7%A4%BA%E4%BE%8B)
-- [扩展语法](#%E6%89%A9%E5%B1%95%E8%AF%AD%E6%B3%95)
-  * [Todo列表](#todo%E5%88%97%E8%A1%A8)
-  * [Mathjax](#mathjax)
-  * [时序图](#时序图)
-  * [Emoji](#emoji)
-  * [ECharts](#echarts)
-    * [配置](#配置)
-  * [自定义扩展](#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%89%A9%E5%B1%95)
-- [导出](#%E5%AF%BC%E5%87%BA)
-  * [多说评论框](#%E5%A4%9A%E8%AF%B4%E8%AF%84%E8%AE%BA%E6%A1%86)
-- [其他说明](#%E5%85%B6%E4%BB%96%E8%AF%B4%E6%98%8E)
-  * [Markdown 文件解析](#markdown-%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90)
-  * [Markdown 样式](#markdown-%E6%A0%B7%E5%BC%8F)
-  * [本地图片](#%E6%9C%AC%E5%9C%B0%E5%9B%BE%E7%89%87)
-  * [目录](#%E7%9B%AE%E5%BD%95)
-  * [缓存](#%E7%BC%93%E5%AD%98)
-<!-- tocstop -->
-
+- [Online gh-pages generator](#online-gh-pages-generator)
+  - [功能](#%E5%8A%9F%E8%83%BD)
+  - [示例](#%E7%A4%BA%E4%BE%8B)
+  - [主题](#%E4%B8%BB%E9%A2%98)
+    - [通用配置](#%E9%80%9A%E7%94%A8%E9%85%8D%E7%BD%AE)
+    - [主题相关配置](#%E4%B8%BB%E9%A2%98%E7%9B%B8%E5%85%B3%E9%85%8D%E7%BD%AE)
+      - [Cayman](#cayman)
+      - [Minimal 和 Modernist](#minimal-%E5%92%8C-modernist)
+  - [扩展语法](#%E6%89%A9%E5%B1%95%E8%AF%AD%E6%B3%95)
+    - [Todo列表](#todo%E5%88%97%E8%A1%A8)
+    - [Mathjax](#mathjax)
+    - [时序图](#%E6%97%B6%E5%BA%8F%E5%9B%BE)
+    - [Emoji](#emoji)
+    - [ECharts](#echarts)
+      - [配置](#%E9%85%8D%E7%BD%AE)
+    - [自定义扩展](#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%89%A9%E5%B1%95)
+  - [导出](#%E5%AF%BC%E5%87%BA)
+    - [多说评论框](#%E5%A4%9A%E8%AF%B4%E8%AF%84%E8%AE%BA%E6%A1%86)
+  - [其他说明](#%E5%85%B6%E4%BB%96%E8%AF%B4%E6%98%8E)
+    - [Markdown 文件解析](#markdown-%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90)
+    - [Markdown 样式](#markdown-%E6%A0%B7%E5%BC%8F)
+    - [本地图片](#%E6%9C%AC%E5%9C%B0%E5%9B%BE%E7%89%87)
+    - [目录](#%E7%9B%AE%E5%BD%95)
+    - [缓存](#%E7%BC%93%E5%AD%98)
+<!-- END doctoc -->
 ## 功能
 
-+ 支持多个页面主题
++ 支持多种页面主题
 + `Prism.js` / `Highlight.js` 代码高亮
 + 自动生成目录
 + 本地图片显示
@@ -41,7 +46,71 @@
     - [图表 (ECharts)](http://echarts.baidu.com/)
 
 ## 示例
-[示例文件](demo/sample.md)    [示例预览](http://zhangjikai.com/markdown/sample.html)
+[示例文件](demo/sample.md)    
+[示例预览](http://zhangjikai.com/markdown/sample.html)
+
+## 主题
+现在支持下面 6 种主题，以后会增加更多的主题。
+* [Architect](https://github.com/jasonlong/architect-theme)
+* [Cayman](https://github.com/jasonlong/cayman-theme)
+* [Minimal](https://github.com/orderedlist/minimal)
+* [Modernist](https://github.com/orderedlist/modernist)
+* [Slate](https://github.com/jasoncostello/slate)
+* [Time machine](https://github.com/jonrohan/time-machine-theme)
+
+### 通用配置
+主题通用的配置如下所示，在 Markdown 文件中插入下面的代码块即可。
+
+<pre><code>```ghpages
+{
+    title: "名称",
+    desc: "描述",
+    github: "github 地址",
+    zip: "zip 文件下载地址",
+    tar: "tar.gz 文件下载地址",
+    footer: {
+        owner: '作者信息', 
+        credits: '相关声明'
+    }
+}
+```
+</code></pre>
+
+### 主题相关配置
+#### Cayman
+在 Cayman 主题中，可以添加新的链接。如下所示，其中 order 是，`github` 链接默认的数值是 `10`, `zip` 链接的默认是
+
+<pre><code>```ghpages
+{
+    link: [
+    	{
+    		order: 1,
+    		text: "Other Link",
+    		url: "#"
+    	}
+    ],
+}
+```
+</code></pre>
+
+
+* `order` - 链接显示的顺序。 `github`, `zip`, `tar` 对应的值分别为10, 11, 12。数值较小的链接在前面显示。数值相同的链接按出现的先后顺序显示。
+* `text` - 链接显示的文字
+* `url` - 链接的 url 地址
+
+#### Minimal 和 Modernist
+在这两个主题中，需要配置项目的名称信息，如下所示：
+
+<pre><code>```ghpages
+{
+    project: {
+    	url: "#",
+    	name: "zhangjikai/online-ghpages-generator"
+    },
+}
+```
+</code></pre>
+
 ## 扩展语法
 ### Todo列表
 ```
