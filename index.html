@@ -6,10 +6,11 @@
     <title>Online Markdown Reader</title>
 
 
-    <link rel="stylesheet" href="assets/lib/highlightjs/styles/github.css" custom-type="custom" prefix="caymanminimal"
+    <link rel="stylesheet" href="assets/lib/highlightjs/styles/github.css" custom-type="custom"
+          prefix="caymanminimalarchitect"
           disabled="true">
     <link href="http://cdn.bootcss.com/prism/9000.0.1/themes/prism.min.css" rel="stylesheet" custom-type="custom"
-          prefix="caymanminimal" disabled="true">
+          prefix="caymanminimalarchitect" disabled="true">
 
 
     <!-- modernist slate-->
@@ -63,21 +64,21 @@
           disabled="true">
 
     <!-- time -->
-    <link rel="stylesheet" href="assets/theme/time/css/time.css" custom-type="custom" prefix="time"
-          disabled="true">
+    <link rel="stylesheet" href="assets/theme/time/css/time.css" custom-type="custom" prefix="time" disabled="true">
+
+    <!-- architect -->
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="assets/theme/architect/css/architect.css" custom-type="custom" prefix="architect" disabled="true">
+
 
     <link rel="stylesheet" href="assets/css/custom-theme/common.css">
 
     <!-- custom -->
-    <link rel="stylesheet" href="assets/css/custom-theme/custom-minimal.css" custom-type="custom" prefix="minimal"
-          disabled="true">
-    <link rel="stylesheet" href="assets/css/custom-theme/custom-modernist.css" custom-type="custom" prefix="modernist"
-          disabled="true">
-    <link rel="stylesheet" href="assets/css/custom-theme/custom-slate.css" custom-type="custom" prefix="slate"
-          disabled="true">
-
-    <link rel="stylesheet" href="assets/css/custom-theme/custom-time.css" custom-type="custom" prefix="time"
-          disabled="true">
+    <link rel="stylesheet" href="assets/css/custom-theme/custom-minimal.css" custom-type="custom" prefix="minimal" disabled="true">
+    <link rel="stylesheet" href="assets/css/custom-theme/custom-modernist.css" custom-type="custom" prefix="modernist" disabled="true">
+    <link rel="stylesheet" href="assets/css/custom-theme/custom-slate.css" custom-type="custom" prefix="slate" disabled="true">
+    <link rel="stylesheet" href="assets/css/custom-theme/custom-time.css" custom-type="custom" prefix="time" disabled="true">
+    <link rel="stylesheet" href="assets/css/custom-theme/custom-architect.css" custom-type="custom" prefix="architect" disabled="true">
 
 
     <link href="http://cdn.bootcss.com/prism/9000.0.1/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet">
@@ -264,11 +265,33 @@
 
         </div>
 
-
-
         <div class="current-section" id="time-bottom">
-
         </div>
+    </div>
+
+
+    <!-- architect -->
+    <div id="architect" class="div-hide">
+
+        <header>
+            <div class="inner" id="architect-page-header"></div>
+        </header>
+        <div id="content-wrapper">
+            <div class="inner clearfix">
+                <section id="main-content">
+                    <section id="architect-content"></section>
+                </section>
+
+                <aside id="sidebar"></aside>
+            </div>
+        </div>
+
+
+        <!--<footer>
+            <p id="architect-owner"></p>
+
+            <p id="architect-credits"></p>
+        </footer>-->
     </div>
 
 </div>
@@ -414,6 +437,8 @@
             <label for="s_slate">Slate</label>
             <input class="magic-radio custom-radio" type="radio" name="theme" id="s_time">
             <label for="s_time">Time</label>
+            <input class="magic-radio custom-radio" type="radio" name="theme" id="s_architect">
+            <label for="s_architect">Architect</label>
         </div>
     </div>
 
@@ -441,6 +466,10 @@
       }
     }
   });
+
+
+
+
 
 
 

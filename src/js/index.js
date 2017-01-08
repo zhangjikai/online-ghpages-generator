@@ -57,7 +57,8 @@
         minimal: "minimal",
         modernist: "modernist",
         slate: "slate",
-        time: "time"
+        time: "time",
+        architect: "architect"
     };
 
     var Setting = {
@@ -376,6 +377,9 @@
             case Theme.time:
                 headerTime();
                 break;
+            case Theme.architect:
+                headerArchitect();
+                break;
         }
         processFooter();
     }
@@ -637,17 +641,9 @@
         $(headerId).html("");
         var tmpText = "";
         var tmpHtml = "";
-        var tmpObj;
 
-
-        /*if (ghPageConfig.hasOwnProperty("github")) {
-         tmpText = ghPageConfig["gtihub"];
-         tmpHtml = "<a id='forkme_banner' href='" + tmpText + "'> View on Github</a>";
-         $(headerId).append(tmpHtml);
-         }
-         */
         if (ghPageConfig.hasOwnProperty("title")) {
-            //$("#page-title").append(ghPageConfig["title"]);
+
             tmpText = ghPageConfig["title"];
             tmpHtml = "<h1 class='title'>" + tmpText + "</h1>";
             $(headerId).append(tmpHtml);
@@ -665,7 +661,6 @@
 
         $("#time-bar").html("");
         $("#time-bottom").html('<a href="#top">Scroll to top</a>');
-
 
 
         if (ghPageConfig.hasOwnProperty("tar")) {
@@ -714,13 +709,63 @@
 
         $("#time-bottom").append('<p class="name"></p>');
 
-        //$("#slate-download").html("");
-        //if (linkArray.length > 1) {
-        //    linkArray.forEach(function (link) {
-        //        tmpHtml = '<a href="' + link.url + '" class="download>' + link.text + '</a>';
-        //        $("#slate-download").append(tmpHtml);
-        //    });
-        //}
+    }
+
+
+    function headerArchitect() {
+
+        var headerId = "#architect-page-header";
+        var tmpText = "";
+        var tmpHtml = "";
+        $(headerId).html("");
+        if (ghPageConfig.hasOwnProperty("title")) {
+            tmpText = ghPageConfig["title"];
+            tmpHtml = "<h1>" + tmpText + "</h1>";
+            $(headerId).append(tmpHtml);
+        }
+
+        if (ghPageConfig.hasOwnProperty("desc")) {
+            tmpText = ghPageConfig["desc"];
+            tmpHtml = "<h2 >" + tmpText + "</h2>";
+            $(headerId).append(tmpHtml);
+        }
+
+        if (ghPageConfig.hasOwnProperty("github")) {
+
+            tmpText = ghPageConfig["gtihub"];
+            tmpHtml = "<a href='" + tmpText + "' class='button'><small> View project on</small> GitHub</a>";
+            $(headerId).append(tmpHtml);
+        }
+
+
+
+
+        $("#sidebar").html("");
+        if (ghPageConfig.hasOwnProperty("zip")) {
+            tmpText = ghPageConfig["zip"];
+            tmpHtml = "<a href='" + tmpText + "' class='button'><small> Download</small> .zip file</a>";
+            $("#sidebar").append(tmpHtml);
+        }
+
+        if (ghPageConfig.hasOwnProperty("tar")) {
+            tmpText = ghPageConfig["tar"];
+            tmpHtml = "<a href='" + tmpText + "' class='button'><small> Download</small> .tar file</a>";
+            $("#sidebar").append(tmpHtml);
+        }
+
+
+        if (ghPageConfig.hasOwnProperty("footer") && ghPageConfig["footer"].hasOwnProperty("owner")) {
+            tmpText = ghPageConfig.footer.owner;
+            tmpHtml = "<p class='repo-owner'>" + tmpText + "</p>";
+            $("#sidebar").append(tmpHtml);
+        }
+
+        if (ghPageConfig.hasOwnProperty("footer") && ghPageConfig["footer"].hasOwnProperty("credits")) {
+            tmpText = ghPageConfig.footer.credits;
+            tmpHtml = "<p >" + tmpText + "</p>";
+            $("#sidebar").append(tmpHtml);
+        }
+
     }
 
     function processFooter() {
