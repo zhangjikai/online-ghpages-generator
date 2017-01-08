@@ -768,6 +768,28 @@
 
     }
 
+
+    function addDisqus() {
+        themeContentTag = Setting.theme + "-content";
+        var disqus = '<div id="disqus_thread"></div>' +
+            '<script>' +
+            "var disqus_shortname = 'gitbookuse';" +
+            'var disqus_config = function () {' +
+            'this.page.url = "http://markdown.zhangjikai.com";' +
+            'this.page.identifier = "gitbook-use"' +
+            '};' +
+            '(function() { ' +
+            ' var d = document,' +
+            "s = d.createElement('script');" +
+            "s.src = '//' + disqus_shortname + '.disqus.com/embed.js';" +
+            "s.setAttribute('data-timestamp', +new Date()); (d.head || d.body).appendChild(s);" +
+            " })();</script>";
+        $("#" + themeContentTag).append(
+            disqus
+        );
+    }
+
+
     function processFooter() {
         if (ghPageConfig.hasOwnProperty("footer") && ghPageConfig["footer"].hasOwnProperty("owner")) {
             $("#" + Setting.theme + "-owner").html(ghPageConfig.footer.owner);
@@ -785,14 +807,8 @@
             calTocStart(content);
             setDsConfig(mdName);
 
-            //Setting.highlight = Constants.syntaxhigh;
             themeContentTag = Setting.theme + "-content";
             $("#" + themeContentTag).html(marked(content));
-            //processGhPageConfig();
-
-            //headerMinimal();
-            //processFooter();
-            //console.log(marked(content))
 
             handleGHpage();
 
@@ -808,9 +824,7 @@
                     hljs.highlightBlock(block);
                 });
 
-            } else if (Setting.highlight == Constants.syntaxhigh) {
-                SyntaxHighlighter.all()
-            } else {
+            }  else {
                 $("pre").addClass("line-numbers");
                 Prism.highlightAll();
             }
@@ -848,6 +862,9 @@
                     chart.setOption(data.option);
                 });
             }
+
+
+            addDisqus();
         } catch (e) {
             console.log(e);
             sweetAlert("出错了", "处理文件出现错误，请检查语法", "error");
@@ -878,7 +895,6 @@
     }
 
     function saveMdFile(name, content) {
-
         if (content.length > maxSize) {
             var sizeTip = $('[data-remodal-id=size-tip]').remodal();
             sizeTip.open();

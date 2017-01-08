@@ -279,7 +279,10 @@
         <div id="content-wrapper">
             <div class="inner clearfix">
                 <section id="main-content">
-                    <section id="architect-content"></section>
+                    <section id="architect-content">
+
+
+                    </section>
                 </section>
 
                 <aside id="sidebar"></aside>
@@ -293,6 +296,22 @@
             <p id="architect-credits"></p>
         </footer>-->
     </div>
+
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_shortname = 'gitbookuse';
+        var disqus_config = function () {
+            this.page.url = "http://zhangjikai.com/markdwon/sample.html";
+            this.page.identifier = "sample.html";
+        };
+        (function () {
+            var d = document, s = d.createElement('script');
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script>
+    <noscript>Please enable JavaScript to view the
+        <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 
 </div>
 
@@ -466,6 +485,7 @@
       }
     }
   });
+
 
 
 
