@@ -1,11 +1,12 @@
 /*nav*/
 body {
-  font: 14px/1.42857 "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background: #fff;
+  /*font: 14px/1.42857 "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: #fff;*/
+  padding-top: 100px;
 }
-#content {
+/*#content {
   margin-top: 1em;
-}
+}*/
 nav {
   height: 48px;
   width: 100%;
@@ -14,7 +15,8 @@ nav {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 10;
+  z-index: 9999;
+  font: 14px/1.42857 "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
   /*li:hover {
     background-color: @nav-hover;
   }*/
@@ -40,9 +42,11 @@ nav a {
   height: 48px;
   margin: 0 1em;
   padding: 0;
+  border-bottom: none;
 }
 nav a:hover {
   color: #fff;
+  text-decoration: none;
 }
 nav a#openup {
   display: none;
@@ -112,13 +116,36 @@ nav a#openup {
   zoom: 1;
 }
 /* Upload */
+/*@media screen and (min-width: 862px) {
+  #upload {
+    width: 862px;
+    margin: 0 auto;
+  }
+}
+
+@media screen and (max-width: 861px){
+  #upload {
+    width: auto;
+  }
+}*/
+#upload-top {
+  position: fixed;
+  background: #fff;
+  height: 52px;
+  width: 100%;
+  top: 48px;
+  z-index: 999;
+}
 #upload {
   width: auto;
-  z-index: 3;
-  margin-top: 58px;
-  position: relative;
+  z-index: 1000;
+  position: fixed;
   background: #F5F7FA;
   border: 2px dashed #ddd;
+  left: 10px;
+  right: 10px;
+  top: 58px;
+  font-size: 14px;
 }
 #fold {
   display: block;
@@ -207,6 +234,7 @@ nav a#openup {
   margin: 0;
 }
 .remodal-custom {
+  font: 14px/1.42857 "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding: 20px;
   max-height: 350px;
   overflow: auto;
@@ -301,14 +329,32 @@ nav a#openup {
   line-height: 16px;
   display: inline-block;
   margin: 0.5em 1em;
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
 }
 .custom-radio + label:before {
   width: 14px;
   height: 14px;
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
 }
 .custom-radio + label:after {
   left: 5px;
   top: 5px;
   width: 6px;
   height: 6px;
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+}
+.div-hide {
+  display: none;
+}
+#modernist {
+  padding-top: 50px;
+}
+.current-section {
+  top: 100px;
 }

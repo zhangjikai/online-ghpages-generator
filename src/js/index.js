@@ -31,7 +31,7 @@
 
     var themeContentTag = "";
 
-    var dsConfig = {
+    var commentConfig = {
         "key": "test",
         "title": "test",
         "url": "test.html",
@@ -48,7 +48,10 @@
         mdContent: "mdContent",
         tocTag: "<!-- toc -->",
         setting: "setting",
-        DHShort: "duoshuoShort"
+        DHShort: "duoshuoShort",
+        duoshuo: "duoshuo",
+        disqus: "disqus",
+        none: "none"
 
     };
 
@@ -71,7 +74,7 @@
         sd: true,
         emoji: true,
         backtop: true,
-        duoshuo: true,
+        comment: Constants.duoshuo,
         echarts: true,
         format: true,
         theme: Theme.cayman
@@ -171,9 +174,9 @@
                     return "<p>" + code + "</p>\n";
                 }
                 return customCode(code, language);
-            case "duoshuo":
-                if (Setting.duoshuo) {
-                    loadDuoshuoConfig(code);
+            case "comment":
+                if (Setting.comment != Constants.none) {
+                    loadCommentConfig(code);
                 }
                 return "";
             case "echarts":
@@ -214,7 +217,7 @@
     //    }
     //}
 
-    function loadDuoshuoConfig(text) {
+    function loadCommentConfig(text) {
         try {
             var config = JSON.parse(text);
             for (var key in config) {
@@ -223,13 +226,13 @@
                     console.warn('\'' + key + '\' parameter is undefined.');
                     continue;
                 }
-                if (key in dsConfig) {
-                    dsConfig[key] = newValue;
+                if (key in commentConfig) {
+                    commentConfig[key] = newValue;
                 }
             }
-            localStorage.setItem(Constants.DHShort, dsConfig.short_name);
+            localStorage.setItem(Constants.DHShort, commentConfig.short_name);
         } catch (e) {
-            sweetAlert("出错了", "解析 多说 配置出现错误，请检查语法", "error");
+            sweetAlert("出错了", "解析 评论 配置出现错误，请检查语法", "error");
             console.log(e);
         }
     }
@@ -738,8 +741,6 @@
         }
 
 
-
-
         $("#sidebar").html("");
         if (ghPageConfig.hasOwnProperty("zip")) {
             tmpText = ghPageConfig["zip"];
@@ -770,25 +771,35 @@
 
 
     function addDisqus() {
-        themeContentTag = Setting.theme + "-content";
-        var disqus = '<div id="disqus_thread"></div>' +
-            '<script>' +
-            "var disqus_shortname = 'gitbookuse';" +
-            'var disqus_config = function () {' +
-            'this.page.url = "http://markdown.zhangjikai.com";' +
-            'this.page.identifier = "gitbook-use"' +
-            '};' +
-            '(function() { ' +
-            ' var d = document,' +
-            "s = d.createElement('script');" +
-            "s.src = '//' + disqus_shortname + '.disqus.com/embed.js';" +
-            "s.setAttribute('data-timestamp', +new Date()); (d.head || d.body).appendChild(s);" +
-            " })();</script>";
-        $("#" + themeContentTag).append(
-            disqus
-        );
+        //themeContentTag = Setting.theme + "-content";
+        //
+        //var disqus = '<div id="disqus_thread"></div>' +
+        //    '<script>' +
+        //    "var disqus_shortname = '" + commentConfig.short_name + "';" +
+        //    'var disqus_config = function () {' +
+        //    'this.page.url = "' + commentConfig.url + '";' +
+        //    'this.page.identifier = "' + commentConfig.key + '"' +
+        //    '};' +
+        //    '(function() { ' +
+        //    ' var d = document,' +
+        //    "s = d.createElement('script');" +
+        //    "s.src = '//' + disqus_shortname + '.disqus.com/embed.js';" +
+        //    "s.setAttribute('data-timestamp', +new Date()); (d.head || d.body).appendChild(s);" +
+        //    " })();</script>";
+        //$("#" + themeContentTag).append(disqus);
     }
 
+
+    function addDuoshuo() {
+        /*themeContentTag = Setting.theme + "-content";
+         var duoshuo = '<div class="ds-thread" data-thread-key="' + commentConfig.key +
+         '" data-title="' + commentConfig.title +
+         '" data-url="' + commentConfig.url +
+         '"></div><script type="text/javascript">var duoshuoQuery = {short_name:"' + commentConfig.short_name +
+         '"};(function() {var ds = document.createElement("script");ds.type = "text/javascript";ds.async = true;ds.src = (document.location.protocol == "https:" ? "https:" : "http:") + "//static.duoshuo.com/embed.js";ds.charset = "UTF-8";(document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(ds);})();</script>';
+
+         $("#" + themeContentTag).append(duoshuo);*/
+    }
 
     function processFooter() {
         if (ghPageConfig.hasOwnProperty("footer") && ghPageConfig["footer"].hasOwnProperty("owner")) {
@@ -824,7 +835,7 @@
                     hljs.highlightBlock(block);
                 });
 
-            }  else {
+            } else {
                 $("pre").addClass("line-numbers");
                 Prism.highlightAll();
             }
@@ -863,8 +874,15 @@
                 });
             }
 
+            if (Setting.comment == Constants.disqus) {
+                console.log(1111);
+                addDisqus();
+            }
 
-            addDisqus();
+            if (Setting.comment == Constants.duoshuo) {
+                addDuoshuo();
+            }
+
         } catch (e) {
             console.log(e);
             sweetAlert("出错了", "处理文件出现错误，请检查语法", "error");
@@ -906,9 +924,9 @@
     }
 
     function setDsConfig(name) {
-        dsConfig.key = name;
-        dsConfig.title = name;
-        dsConfig.url = name + ".html";
+        commentConfig.key = name;
+        commentConfig.title = name;
+        commentConfig.url = name + ".html";
     }
 
     function removeCacheFile() {
@@ -1138,22 +1156,20 @@
                 fileRef.setAttribute("type", "text/javascript");
                 fileRef.setAttribute("src", filename);
                 fileRef.onload = function () {
-                    //console.log(111);
-                    //print11();
+
                 };
                 document.body.appendChild(fileRef);
 
                 break;
 
             case Theme.time:
-                console.log(222);
+
                 var filename = "/assets/theme/time/js/script.js"
                 var fileRef = document.createElement('script');
                 fileRef.setAttribute("type", "text/javascript");
                 fileRef.setAttribute("src", filename);
                 fileRef.onload = function () {
-                    //console.log(111);
-                    //print11();
+
                 };
                 document.body.appendChild(fileRef);
 
@@ -1165,28 +1181,30 @@
 
     function loadSetting() {
         var tmpSetting = localStorage.getItem(Constants.setting);
-        if (tmpSetting == null) {
-            return;
-        }
-        tmpSetting = JSON.parse(tmpSetting);
-        for (var key in tmpSetting) {
-            var newValue = tmpSetting[key];
-            if (newValue === undefined) {
-                console.warn('\'' + key + '\' parameter is undefined.');
-                continue;
-            }
-            if (key in Setting) {
-                Setting[key] = newValue;
-            }
-        }
+        if (tmpSetting != null) {
 
-        var sname = localStorage.getItem(Constants.DHShort);
-        if (sname != null) {
-            dsConfig.short_name = sname;
+
+            tmpSetting = JSON.parse(tmpSetting);
+            for (var key in tmpSetting) {
+                var newValue = tmpSetting[key];
+                if (newValue === undefined) {
+                    console.warn('\'' + key + '\' parameter is undefined.');
+                    continue;
+                }
+                if (key in Setting) {
+                    Setting[key] = newValue;
+                }
+            }
+
+            var sname = localStorage.getItem(Constants.DHShort);
+            if (sname != null) {
+                commentConfig.short_name = sname;
+            }
         }
 
         //Setting.theme = Theme.time;
 
+        console.log(Setting.theme);
         $("#" + Setting.theme).css("display", "block");
 
         //document.getElementById('test-mod').disabled = true;
@@ -1241,14 +1259,8 @@
             saveSetting();
         });
 
-        //if (Setting["highlight"] == Constants.highlight) {
-        //    $("#s_highlight").prop("checked", true);
-        //} else {
-        //    $("#s_prism").prop("checked", true);
-        //}
 
         $("#s_" + Setting["highlight"]).prop("checked", true);
-
         $("[name='high']").each(function (index, ele) {
             $(ele).change(function (e) {
                 var text = $(ele).prop("id");
@@ -1261,9 +1273,10 @@
             })
         });
 
+        /*$("#s_" + Setting["theme"]).prop("checked", true);*/
+
 
         $("#s_" + Setting["theme"]).prop("checked", true);
-
         $("[name='theme']").each(function (index, ele) {
             $(ele).change(function (e) {
                 //$("#" + Setting["theme"]).css("display", "none");
@@ -1289,6 +1302,19 @@
 
             })
         });
+
+
+        $("#s_" + Setting["comment"]).prop("checked", true);
+        $("[name='comment']").each(function (index, ele) {
+            $(ele).change(function (e) {
+                //$("#" + Setting["theme"]).css("display", "none");
+                var text = $(ele).prop("id").substring(2);
+                Setting["comment"] = text;
+                saveSetting();
+
+
+            })
+        });
         //switch (Setting.theme) {
         //    case Theme.cayman:
         //        $("#s_" + Theme.cayman).prop("checked", true);
@@ -1300,23 +1326,121 @@
 
     }
 
+    function getLinkStr(cssFile) {
+        return '<link href="' + cssFile + '" rel="stylesheet" type="text/css">';
+    }
+
+    function getScriptStr(jsFile) {
+        return '<script type="text/javascript" src="' + jsFile + '"></script>'
+    }
+
     function exportHtml() {
 
+        var urlPrefix = "http://localhost:81/";
+        var themeCssFiles = {
+            cayman: [
+                "http://cdn.bootcss.com/highlight.js/9.9.0/styles/github.min.css",
+                "http://cdn.bootcss.com/prism/9000.0.1/themes/prism.min.css",
+                "https://fonts.css.network/css?family=Open+Sans:400,700",
+                urlPrefix + "dist/theme/cayman/css/normalize.min.css",
+                urlPrefix + "dist/theme/cayman/css/cayman.min.css",
+                urlPrefix + "dist/css/custom-theme/common.min.css"
+            ],
+
+            minimal: [
+                "http://cdn.bootcss.com/highlight.js/9.9.0/styles/github.min.css",
+                "http://cdn.bootcss.com/prism/9000.0.1/themes/prism.min.css",
+                urlPrefix + "dist/theme/minimal/css/minimal.min.css",
+                urlPrefix + "dist/css/custom-theme/common.min.css",
+                urlPrefix + "dist/css/custom-theme/custom-minimal.min.css"
+            ],
+
+            modernist: [
+                "http://cdn.bootcss.com/highlight.js/9.9.0/styles/agate.min.css",
+                "http://cdn.bootcss.com/prism/9000.0.1/themes/prism-twilight.min.css",
+                "https://fonts.css.network/css?family=Lato:300italic,700italic,300,700",
+                urlPrefix + "dist/theme/modernist/css/modernist.min.css",
+                urlPrefix + "dist/css/custom-theme/common.min.css",
+                urlPrefix + "dist/css/custom-theme/custom-modernist.min.css"
+            ],
+
+            slate: [
+                "http://cdn.bootcss.com/highlight.js/9.9.0/styles/agate.min.css",
+                "http://cdn.bootcss.com/prism/9000.0.1/themes/prism-twilight.min.css",
+                "https://fonts.css.network/css?family=Roboto:400,400italic,700italic,700",
+                "https://fonts.css.network/css?family=Roboto+Condensed:300,300italic,700,700italic",
+                urlPrefix + "dist/theme/slate/css/normalize.min.css",
+                urlPrefix + "dist/theme/slate/css/slate.min.css",
+                urlPrefix + "dist/css/custom-theme/common.min.css",
+                urlPrefix + "dist/css/custom-theme/custom-slate.min.css"
+            ],
+            time: [
+                "http://cdn.bootcss.com/highlight.js/9.9.0/styles/agate.min.css",
+                "http://cdn.bootcss.com/prism/9000.0.1/themes/prism-twilight.min.css",
+                urlPrefix + "dist/theme/time/css/time.min.css",
+                urlPrefix + "dist/css/custom-theme/common.min.css",
+                urlPrefix + "dist/css/custom-theme/custom-time.min.css"
+            ],
+
+            architect: [
+                "http://cdn.bootcss.com/highlight.js/9.9.0/styles/github.min.css",
+                "http://cdn.bootcss.com/prism/9000.0.1/themes/prism.min.css",
+                "https://fonts.css.network/css?family=Architects+Daughter",
+                urlPrefix + "dist/theme/architect/css/architect.min.css",
+                urlPrefix + "dist/css/custom-theme/common.min.css",
+                urlPrefix + "dist/css/custom-theme/custom-architect.min.css"
+            ]
+        };
+
+        var themeJsFiles = {
+            minimal: [
+                urlPrefix + "dist/theme/minimal/js/scale.fix.min.js"
+            ],
+            modernist: [
+                urlPrefix + "dist/theme/modernist/js/scale.fix.min.js"
+            ],
+            time: [
+                urlPrefix + "dist/theme/time/js/script.min.js"
+            ]
+        };
+
         var htmlContent = "";
-
-
+        var styleFiles = "";
+        var jsFiles = "";
         var styleContent = "";
         var jsContent = "";
+        var hasAddJquery = false;
 
+        var tmpCssFiles = themeCssFiles[Setting.theme];
         if (Setting.highlight == Constants.highlight) {
-            styleContent += '<link href="http://cdn.bootcss.com/highlight.js/9.8.0/styles/atom-one-light.min.css" rel="stylesheet">';
+            styleFiles += getLinkStr(tmpCssFiles[0]);
         } else {
-            styleContent += '<link href="http://cdn.bootcss.com/prism/9000.0.1/themes/prism.min.css" rel="stylesheet">'
-            styleContent += '<link href="http://cdn.bootcss.com/prism/9000.0.1/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet">';
+            styleFiles += getLinkStr(tmpCssFiles[1]);
+        }
+        console.log(tmpCssFiles)
+        var i;
+        for (i = 2; i < tmpCssFiles.length; i++) {
+            styleFiles += getLinkStr(tmpCssFiles[i]);
         }
 
+        if (Setting.highlight == Constants.prism) {
+            styleFiles += getLinkStr("http://cdn.bootcss.com/prism/9000.0.1/plugins/line-numbers/prism-line-numbers.min.css");
+        }
+
+
+        //if (Setting.highlight == Constants.highlight) {
+        //    styleContent += '<link href="http://cdn.bootcss.com/highlight.js/9.8.0/styles/atom-one-light.min.css" rel="stylesheet">';
+        //} else {
+        //    styleContent += '<link href="http://cdn.bootcss.com/prism/9000.0.1/themes/prism.min.css" rel="stylesheet">'
+        //    styleContent += '<link href="http://cdn.bootcss.com/prism/9000.0.1/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet">';
+        //}
+
+        //if (Setting.emoji) {
+        //    styleContent += '<link href="http://cdn.bootcss.com/emojify.js/1.1.0/css/basic/emojify.min.css" rel="stylesheet">';
+        //}
+
         if (Setting.emoji) {
-            styleContent += '<link href="http://cdn.bootcss.com/emojify.js/1.1.0/css/basic/emojify.min.css" rel="stylesheet">';
+            styleFiles += getLinkStr("http://cdn.bootcss.com/emojify.js/1.1.0/css/basic/emojify.min.css");
         }
 
         var preMajax = Setting.mathjax;
@@ -1333,7 +1457,22 @@
         }
 
         processMdContent(mdContent);
-        htmlContent = $("#gh-container").html();
+
+
+        if(Setting.comment == Constants.duoshuo) {
+            var div = '<div class="ds-thread" data-thread-key="' + commentConfig.key +
+                '" data-title="' + commentConfig.title +
+                '" data-url="' + commentConfig.url + '"></div>';
+            $("#" + themeContentTag).append(div);
+
+        }
+
+        if(Setting.comment == Constants.disqus) {
+            var div = '<div id="disqus_thread"></div>';
+            $("#" + themeContentTag).append(div);
+        }
+
+        htmlContent = $("#" + Setting.theme).html();
 
         Setting.mathjax = preMajax;
         Setting.echarts = preEcharts;
@@ -1341,6 +1480,7 @@
         exportSetting.echarts = false;
 
         processMdContent(mdContent);
+
 
         if (Setting.mathjax) {
             jsContent += '<script type="text/x-mathjax-config">' +
@@ -1354,36 +1494,59 @@
         }
 
         if (Setting.backtop) {
-            styleContent += '<link href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">';
-            styleContent += ' <link rel="stylesheet" href="http://markdown.zhangjikai.com/dist/css/backtotop.min.css">';
-            jsContent += '<script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>';
-            jsContent += '<script type="text/javascript" src="http://markdown.zhangjikai.com/dist/js/backtotop.min.js"></script>';
+
+            hasAddJquery = true;
+            styleFiles += getLinkStr("http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css");
+            styleFiles += getLinkStr(urlPrefix + "dist/css/backtotop.min.css");
+            jsContent += getScriptStr("http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js");
+            jsContent += getScriptStr(urlPrefix + "dist/js/backtotop.min.js");
             jsContent += '<script type="text/javascript">backToTop.init()</script> '
+
+            //styleContent += '<link href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">';
+            //styleContent += ' <link rel="stylesheet" href="http://markdown.zhangjikai.com/dist/css/backtotop.min.css">';
+            //jsContent += '<script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>';
+            //jsContent += '<script type="text/javascript" src="http://markdown.zhangjikai.com/dist/js/backtotop.min.js"></script>';
+            //jsContent += '<script type="text/javascript">backToTop.init()</script> '
         }
 
-        if (Setting.duoshuo) {
-            jsContent += '<div class="ds-thread" data-thread-key="' + dsConfig.key +
-                '" data-title="' + dsConfig.title +
-                '" data-url="' + dsConfig.url +
-                '"></div><script type="text/javascript">var duoshuoQuery = {short_name:"' + dsConfig.short_name +
+        if (Setting.comment == Constants.duoshuo) {
+
+
+            jsContent += '<script type="text/javascript">var duoshuoQuery = {short_name:"' + commentConfig.short_name +
                 '"};(function() {var ds = document.createElement("script");ds.type = "text/javascript";ds.async = true;ds.src = (document.location.protocol == "https:" ? "https:" : "http:") + "//static.duoshuo.com/embed.js";ds.charset = "UTF-8";(document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(ds);})();</script>';
+        }
+
+        if (Setting.comment == Constants.disqus) {
+
+
+
+            jsContent += '<script type="text/javascript">' +
+                "var disqus_shortname = '" + commentConfig.short_name + "';" +
+                'var prefix = document.location.protocol == "https:" ? "https:" : "http:"' +
+                'var disqus_config = function () {' +
+                'this.page.url = "' + commentConfig.url + '";' +
+                'this.page.identifier = "' + commentConfig.key + '"' +
+                '};' +
+                '(function() { ' +
+                ' var d = document,' +
+                "s = d.createElement('script');" +
+                "s.src = prefix + '//' + disqus_shortname + '.disqus.com/embed.js';" +
+                "s.setAttribute('data-timestamp', +new Date()); (d.head || d.body).appendChild(s);" +
+                " })();</script>";
         }
 
         if (Setting.echarts) {
 
-            jsContent += '<br />';
-            jsContent += '<script src="http://cdn.bootcss.com/echarts/3.3.2/echarts.min.js"></script>';
+            jsContent += getScriptStr("http://cdn.bootcss.com/echarts/3.3.2/echarts.min.js");
             echartData.forEach(function (data) {
                 var themeObj = {};
-
                 if (data.option.theme) {
                     if (!themeObj.hasOwnProperty(data.option.theme)) {
                         if (echartThemeText.indexOf(data.option.theme) != -1) {
-                            jsContent += '<script src="http://markdown.zhangjikai.com/dist/js/echarts-theme/' + data.option.theme + '.min.js"></script>';
+                            jsContent += getScriptStr(urlPrefix + 'dist/js/echarts-theme/' + data.option.theme + '.min.js');
                         }
                         themeObj[data.option.theme] = "theme";
                     }
-
                 }
             });
             jsContent += '<br />';
@@ -1393,16 +1556,24 @@
                 var theme = "";
 
                 if (data.option.theme) {
-
                     theme = data.option.theme;
                 }
                 jsContent += 'var chart' + index + ' = echarts.init(document.getElementById("echarts-' + data.id + '"),"' + theme + '");\n' +
                     'var option' + index + ' = ' + data.previousOption + ';\n' +
                     'chart' + index + '.setOption(option' + index + ');\n';
             });
-            jsContent += "</script>"
+            jsContent += "</script>";
+        }
 
+        if (Setting.theme == Theme.time && !hasAddJquery) {
+            jsContent += getScriptStr("http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js");
+        }
 
+        var tmpJsFiles = themeJsFiles[Setting.theme];
+        if (tmpJsFiles != null ) {
+            for (i = 0; i < tmpJsFiles.length; i++) {
+                jsContent += getScriptStr(tmpJsFiles[i]);
+            }
         }
 
         var htmlContent = '<!DOCTYPE html>' +
@@ -1413,8 +1584,7 @@
             '<title>' +
             mdName +
             '</title>' +
-            styleContent +
-            '<link rel="stylesheet" href="http://markdown.zhangjikai.com/dist/css/markdown.min.css">' +
+            styleFiles +
             '</head>' +
             '<body>' +
             htmlContent +

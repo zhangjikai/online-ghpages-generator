@@ -82,21 +82,37 @@ gulp.task('less', function () {
 
 
 gulp.task('minify-css', function() {
-    return gulp.src('assets/css/*.css')
+     gulp.src('assets/css/**/*.css')
         .pipe(cleanCSS({compatibility: 'ie8'}))
         .pipe(rename({
             suffix: '.min'
         }))
         .pipe(gulp.dest('dist/css'));
+
+    gulp.src('assets/theme/**/*.css')
+        .pipe(cleanCSS({compatibility: 'ie8'}))
+        .pipe(rename({
+            suffix: '.min'
+        }))
+        .pipe(gulp.dest('dist/theme'));
 });
 
-gulp.task('copy-css', function() {
-    return gulp.src('assets/css/*.css')
+gulp.task('copy', function() {
+     gulp.src('assets/css/**/*.css')
         .pipe(gulp.dest('dist/css'));
+
+    gulp.src('assets/theme/**/*.jpg')
+        .pipe(gulp.dest('dist/theme'));
+
+    gulp.src('assets/theme/**/*.png')
+        .pipe(gulp.dest('dist/theme'));
+
+    gulp.src('assets/theme/**/*.svg')
+        .pipe(gulp.dest('dist/theme'));
 });
 
 gulp.task('minify-js', function() {
-    gulp.src('src/js/*.js')
+    gulp.src('src/**/*.js')
         .pipe(minifyJs({
             ext:{
                 src:'.js',
@@ -104,7 +120,7 @@ gulp.task('minify-js', function() {
             },
             exclude: ['tasks'],
             ignoreFiles: ['.combo.js', '-min.js']
-        })).pipe(gulp.dest('dist/js'));
+        })).pipe(gulp.dest('dist'));
 
     gulp.src('assets/lib/echarts/theme/*.js')
         .pipe(minifyJs({
@@ -116,9 +132,19 @@ gulp.task('minify-js', function() {
             ignoreFiles: ['.combo.js', '-min.js']
         })).pipe(gulp.dest('dist/js/echarts-theme/'));
 
+    gulp.src('assets/theme/**/*.js')
+        .pipe(minifyJs({
+            ext:{
+                src:'.js',
+                min:'.min.js'
+            },
+            exclude: ['tasks'],
+            ignoreFiles: ['.combo.js', '-min.js']
+        })).pipe(gulp.dest('dist/theme'));
+
 });
 
-gulp.task("compress", ['minify-css', 'copy-css', 'minify-js']);
+gulp.task("compress", ['minify-css', 'copy', 'minify-js']);
 
 gulp.task("watch", function () {
     gulp.watch("src/**/*.less", ["less"]);

@@ -1,0 +1,30 @@
+.task-list-item-checkbox {
+  margin-left: -1em;
+}
+a.back-top.classic {
+  font-size: 14px;
+  background-color: #dFdFdF;
+  opacity: 0.8;
+  color: #666;
+}
+/* highlight */
+.hljs {
+  width: 100%;
+  color: #fff;
+  background-color: #222;
+  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+  font-size: 14px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 3px;
+  margin: 0 3px;
+}
+/* prism */
+pre[class*="language-"] {
+  width: 100%;
+  color: #fff;
+  background-color: #222;
+  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+  font-size: 14px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 0px;
+}

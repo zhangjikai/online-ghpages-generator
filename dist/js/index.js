@@ -23,7 +23,15 @@
     var hasTocTag = false;
     var minLevel = 5;
 
-    var dsConfig = {
+    var handleHeading = false;
+
+    var ghPageConfig = {};
+
+    /*var footerMsg = {};*/
+
+    var themeContentTag = "";
+
+    var commentConfig = {
         "key": "test",
         "title": "test",
         "url": "test.html",
@@ -35,12 +43,25 @@
     var Constants = {
         highlight: "highlight",
         prism: "prism",
+        syntaxhigh: "syntaxhigh",
         mdName: "mdName",
         mdContent: "mdContent",
         tocTag: "<!-- toc -->",
         setting: "setting",
-        DHShort: "duoshuoShort"
+        DHShort: "duoshuoShort",
+        duoshuo: "duoshuo",
+        disqus: "disqus",
+        none: "none"
 
+    };
+
+    var Theme = {
+        cayman: "cayman",
+        minimal: "minimal",
+        modernist: "modernist",
+        slate: "slate",
+        time: "time",
+        architect: "architect"
     };
 
     var Setting = {
@@ -53,15 +74,20 @@
         sd: true,
         emoji: true,
         backtop: true,
-        duoshuo: true,
+        comment: Constants.duoshuo,
         echarts: true,
-        format: true
+        format: true,
+        theme: Theme.cayman
     };
+
+    console.log("Setting.theme", Setting.theme)
+
 
     var exportSetting = {
         mathjax: false,
         echarts: false
     };
+
 
     var renderer = new marked.Renderer();
 
@@ -77,26 +103,64 @@
         }
     };
 
+
+    var originalHeading = renderer.heading;
+
     renderer.heading = function (text, level) {
-        var slug = text.toLowerCase().replace(/[\s]+/g, '-');
-        if (tocStr.indexOf(slug) != -1) {
-            slug += "-" + tocDumpIndex;
-            tocDumpIndex++;
+        if (handleHeading) {
+            var slug = text.toLowerCase().replace(/[\s]+/g, '-');
+            if (tocStr.indexOf(slug) != -1) {
+                slug += "-" + tocDumpIndex;
+                tocDumpIndex++;
+            }
+
+            tocStr += slug;
+            toc.push({
+                level: level,
+                slug: slug,
+                title: text
+            });
+
+            return "<h" + level + " id=\"" + slug + "\"><a href=\"#" + slug + "\" class=\"anchor\">" + '' +
+                '<svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>' +
+                '' + "</a>" + text + "</h" + level + ">";
+        } else {
+            var slug = text.toLowerCase().replace(/[\s]+/g, '-');
+            if (tocStr.indexOf(slug) != -1) {
+                slug += "-" + tocDumpIndex;
+                tocDumpIndex++;
+            }
+
+            tocStr += slug;
+            toc.push({
+                level: level,
+                slug: slug,
+                title: text
+            });
+
+            return "<h" + level + " id=\"" + slug + "\"><a href=\"#" + slug + "\">" + "</a>" + text + "</h" + level + ">";
         }
-
-        tocStr += slug;
-        toc.push({
-            level: level,
-            slug: slug,
-            title: text
-        });
-
-        return "<h" + level + " id=\"" + slug + "\"><a href=\"#" + slug + "\" class=\"anchor\">" + '' +
-            '<svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>' +
-            '' + "</a>" + text + "</h" + level + ">";
     };
 
-    var originalCodeFun = renderer.code;
+    //var originalCodeFun = renderer.code;
+
+    var customCode = function (code, lang) {
+
+
+        if (Setting.highlight == Constants.highlight) {
+            return "<pre><code class='" + lang +
+                "'>" + code + "</code></pre>";
+        }
+
+        if (Setting.highlight == Constants.syntaxhigh) {
+            return "<pre  class=' brush: " + lang +
+                "; toolbar: false;'>" + code + "</pre>";
+        }
+
+        return "<pre><code class='language-" + lang +
+            "'>" + code + "</code></pre>";
+
+    };
     renderer.code = function (code, language) {
 
         switch (language) {
@@ -104,29 +168,56 @@
                 if (Setting.sd) {
                     return "<div class='diagram' id='diagram'>" + code + "</div>"
                 }
-                return originalCodeFun.call(this, code, language);
+                return customCode(code, language);
             case "mathjax":
                 if (Setting.mathjax || exportSetting.mathjax) {
                     return "<p>" + code + "</p>\n";
                 }
-                return originalCodeFun.call(this, code, language);
-            case "duoshuo":
-                if (Setting.duoshuo) {
-                    loadDuoshuoConfig(code);
+                return customCode(code, language);
+            case "comment":
+                if (Setting.comment != Constants.none) {
+                    loadCommentConfig(code);
                 }
                 return "";
             case "echarts":
                 if (Setting.echarts || exportSetting.echarts) {
                     return loadEcharts(code);
                 }
-                return originalCodeFun.call(this, code, language);
+                return customCode(code, language);
+
+            case "ghpages":
+                loadGhPageConfig(code);
+                return "";
+            //case "footer":
+            //    loadFooter(code);
+            //    return "";
             default :
-                return originalCodeFun.call(this, code, language);
+                return customCode(code, language);
         }
     };
 
+    function loadGhPageConfig(text) {
+        try {
+            ghPageConfig = eval("(" + text + ")");
 
-    function loadDuoshuoConfig(text) {
+        } catch (e) {
+
+            sweetAlert("出错了", "解析 header 配置出现错误，请检查语法", "error");
+
+        }
+    }
+
+    //function loadFooter(text) {
+    //    try {
+    //        footerMsg = eval("(" + text + ")");
+    //    } catch (e) {
+    //        console.log(e);
+    //        sweetAlert("出错了", "解析 footer 配置出现错误，请检查语法", "error");
+    //
+    //    }
+    //}
+
+    function loadCommentConfig(text) {
         try {
             var config = JSON.parse(text);
             for (var key in config) {
@@ -135,13 +226,13 @@
                     console.warn('\'' + key + '\' parameter is undefined.');
                     continue;
                 }
-                if (key in dsConfig) {
-                    dsConfig[key] = newValue;
+                if (key in commentConfig) {
+                    commentConfig[key] = newValue;
                 }
             }
-            localStorage.setItem(Constants.DHShort, dsConfig.short_name);
+            localStorage.setItem(Constants.DHShort, commentConfig.short_name);
         } catch (e) {
-            sweetAlert("出错了", "解析 多说 配置出现错误，请检查语法", "error");
+            sweetAlert("出错了", "解析 评论 配置出现错误，请检查语法", "error");
             console.log(e);
         }
     }
@@ -168,7 +259,7 @@
                 previousOption: text
             });
 
-            return '<div id="echarts-' + echartIndex + '" style="width: ' + width + ';height:' + height + ';"></div>'
+            return '<div class="custom-echarts" id="echarts-' + echartIndex + '" style="width: ' + width + ';height:' + height + ';"></div>'
         } catch (e) {
 
             sweetAlert("出错了", "解析 ECharts 配置出现错误，请检查语法", "error");
@@ -178,7 +269,9 @@
     }
 
     marked.setOptions({
-        renderer: renderer
+        renderer: renderer,
+        highlight: null
+
     });
 
     function refreshAuto() {
@@ -195,8 +288,8 @@
         mdName = delExtension(targetFile.name);
 
         reader.onload = function (e) {
-            document.getElementById("content").innerHTML = marked(e.target.result);
-            MathJax.Hub.Queue(["Typeset", MathJax.Hub, "content"]);
+            document.getElementById(themeContentTag).innerHTML = marked(e.target.result);
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, themeContentTag]);
         }
     }
 
@@ -267,13 +360,468 @@
         echartData.length = 0;
     }
 
+
+    function handleGHpage() {
+        console.log(Setting.theme)
+        switch (Setting.theme) {
+            case Theme.cayman:
+                headerCayman();
+
+                break;
+            case Theme.minimal:
+                headerMinimal();
+                break;
+            case Theme.modernist:
+                headerModernist();
+                break;
+            case Theme.slate:
+                headerSlate();
+                break;
+            case Theme.time:
+                headerTime();
+                break;
+            case Theme.architect:
+                headerArchitect();
+                break;
+        }
+        processFooter();
+    }
+
+    function headerCayman() {
+
+        var headerId = "#cayman-page-header";
+        var tmpText = "";
+        var tmpHtml = "";
+        $(headerId).html("");
+        if (ghPageConfig.hasOwnProperty("title")) {
+            tmpText = ghPageConfig["title"];
+            tmpHtml = "<h1 class='project-name'>" + tmpText + "</h1>";
+            $(headerId).append(tmpHtml);
+        }
+
+        if (ghPageConfig.hasOwnProperty("desc")) {
+            tmpText = ghPageConfig["desc"];
+            tmpHtml = "<h2 class='project-tagline'>" + tmpText + "</h2>";
+            $(headerId).append(tmpHtml);
+        }
+        var linkArray = [];
+        if (ghPageConfig.hasOwnProperty("github")) {
+            linkArray.push({
+                order: 10,
+                "text": "View on Github",
+                "url": ghPageConfig["github"]
+            });
+        }
+
+        if (ghPageConfig.hasOwnProperty("zip")) {
+            linkArray.push({
+                order: 11,
+                "text": "Download .zip",
+                "url": ghPageConfig["zip"]
+            });
+        }
+
+        if (ghPageConfig.hasOwnProperty("tar")) {
+            linkArray.push({
+                order: 12,
+                "text": "Download .tar.gz",
+                "url": ghPageConfig["tar"]
+            });
+        }
+
+        var i, index;
+
+        if (ghPageConfig.hasOwnProperty("link") && ghPageConfig["link"] instanceof Array) {
+            var links = ghPageConfig["link"];
+
+            links.forEach(function (link) {
+                if (!link.hasOwnProperty("order")) {
+                    link.order = 10000;
+                }
+
+                index = 0;
+                for (i = 0; i < linkArray.length; i++) {
+                    if (link.order < linkArray[i].order) {
+                        break;
+                    }
+                    index++;
+                }
+
+                for (i = linkArray.length - 1; i >= index; i--) {
+                    linkArray[i + 1] = linkArray[i];
+                }
+                linkArray[index] = link;
+
+            });
+        }
+
+        var aContent;
+        $(headerId).children('a').remove();
+
+        linkArray.forEach(function (link) {
+            aContent = '<a class="btn" href="' + link.url + '">' + link.text + '</a>'
+            $(headerId).append(aContent);
+        });
+    }
+
+
+    function headerMinimal() {
+
+        var headerId = "#minimal-page-header";
+        $(headerId).html("");
+        var tmpText = "";
+        var tmpHtml = "";
+        var tmpObj;
+
+
+        if (ghPageConfig.hasOwnProperty("title")) {
+            //$("#page-title").append(ghPageConfig["title"]);
+            tmpText = ghPageConfig["title"];
+            tmpHtml = "<h1>" + tmpText + "</h1>";
+            $(headerId).append(tmpHtml);
+        }
+
+        if (ghPageConfig.hasOwnProperty("desc")) {
+            tmpText = ghPageConfig["desc"];
+            tmpHtml = "<p>" + tmpText + "</p>";
+            $(headerId).append(tmpHtml);
+        }
+
+        if (ghPageConfig.hasOwnProperty("project")) {
+            tmpObj = ghPageConfig["project"];
+            tmpHtml = '<p> <a href="' + tmpObj.url + '">View the Project on GitHub<small>' + tmpObj.name + '</small></a></p>';
+            $(headerId).append(tmpHtml);
+        }
+
+        var linkArray = [];
+
+        if (ghPageConfig.hasOwnProperty("zip")) {
+            linkArray.push({
+                "text": "Download <strong>ZIP File</strong>",
+                "url": ghPageConfig["zip"]
+            });
+        }
+
+        if (ghPageConfig.hasOwnProperty("tar")) {
+            linkArray.push({
+                "text": "Download <strong>TAR Ball</strong>",
+                "url": ghPageConfig["tar"]
+            });
+        }
+
+        if (ghPageConfig.hasOwnProperty("github")) {
+            linkArray.push({
+                "text": "Fork On <strong>GitHub</strong>",
+                "url": ghPageConfig["github"]
+            });
+        }
+
+        if (linkArray.length > 1) {
+            var ul = $("<ul />").appendTo($(headerId));
+            linkArray.forEach(function (link) {
+                tmpHtml = '<li><a href="' + link.url + '">' + link.text + '</a></li>';
+                ul.append(tmpHtml);
+            });
+        }
+    }
+
+    function headerModernist() {
+        var headerId = "#modernist-page-header";
+        $(headerId).html("");
+        var tmpText = "";
+        var tmpHtml = "";
+        var tmpObj;
+
+
+        if (ghPageConfig.hasOwnProperty("title")) {
+            //$("#page-title").append(ghPageConfig["title"]);
+            tmpText = ghPageConfig["title"];
+            tmpHtml = "<h1>" + tmpText + "</h1>";
+            $(headerId).append(tmpHtml);
+        }
+
+        if (ghPageConfig.hasOwnProperty("desc")) {
+            tmpText = ghPageConfig["desc"];
+            tmpHtml = "<p>" + tmpText + "</p>";
+            $(headerId).append(tmpHtml);
+        }
+
+        if (ghPageConfig.hasOwnProperty("project")) {
+            tmpObj = ghPageConfig["project"];
+            tmpHtml = '<p class="view"> <a href="' + tmpObj.url + '">View the Project on GitHub<small>' + tmpObj.name + '</small></a></p>';
+            $(headerId).append(tmpHtml);
+        }
+
+        var linkArray = [];
+
+        if (ghPageConfig.hasOwnProperty("zip")) {
+            linkArray.push({
+                "text": "Download <strong>ZIP File</strong>",
+                "url": ghPageConfig["zip"]
+            });
+        }
+
+        if (ghPageConfig.hasOwnProperty("tar")) {
+            linkArray.push({
+                "text": "Download <strong>TAR Ball</strong>",
+                "url": ghPageConfig["tar"]
+            });
+        }
+
+        if (ghPageConfig.hasOwnProperty("github")) {
+            linkArray.push({
+                "text": "Fork On <strong>GitHub</strong>",
+                "url": ghPageConfig["github"]
+            });
+        }
+
+        if (linkArray.length > 1) {
+            var ul = $("<ul />").appendTo($(headerId));
+            linkArray.forEach(function (link) {
+                tmpHtml = '<li><a href="' + link.url + '">' + link.text + '</a></li>';
+                ul.append(tmpHtml);
+            });
+        }
+    }
+
+
+    function headerSlate() {
+        var headerId = "#slate-page-header";
+        $(headerId).html("");
+        var tmpText = "";
+        var tmpHtml = "";
+        var tmpObj;
+
+
+        if (ghPageConfig.hasOwnProperty("github")) {
+            tmpText = ghPageConfig["gtihub"];
+            tmpHtml = "<a id='forkme_banner' href='" + tmpText + "'> View on Github</a>";
+            $(headerId).append(tmpHtml);
+        }
+
+        if (ghPageConfig.hasOwnProperty("title")) {
+            //$("#page-title").append(ghPageConfig["title"]);
+            tmpText = ghPageConfig["title"];
+            tmpHtml = "<h1 id='project_title'>" + tmpText + "</h1>";
+            $(headerId).append(tmpHtml);
+        }
+
+        if (ghPageConfig.hasOwnProperty("desc")) {
+            tmpText = ghPageConfig["desc"];
+            tmpHtml = "<h2 id='project_tagline'>" + tmpText + "</h2>";
+            $(headerId).append(tmpHtml);
+        }
+
+        var linkArray = [];
+
+        if (ghPageConfig.hasOwnProperty("zip")) {
+            linkArray.push({
+                "text": "Download .zip",
+                "url": ghPageConfig["zip"]
+            });
+        }
+
+        if (ghPageConfig.hasOwnProperty("tar")) {
+            linkArray.push({
+                "text": "Download .tar.gz",
+                "url": ghPageConfig["tar"]
+            });
+        }
+
+
+        $("#slate-download").html("");
+        if (linkArray.length > 1) {
+            linkArray.forEach(function (link) {
+                tmpHtml = '<a href="' + link.url + '">' + link.text + '</a>';
+                $("#slate-download").append(tmpHtml);
+            });
+        }
+    }
+
+
+    function headerTime() {
+        var headerId = "#time-page-header";
+        $(headerId).html("");
+        var tmpText = "";
+        var tmpHtml = "";
+
+        if (ghPageConfig.hasOwnProperty("title")) {
+
+            tmpText = ghPageConfig["title"];
+            tmpHtml = "<h1 class='title'>" + tmpText + "</h1>";
+            $(headerId).append(tmpHtml);
+        }
+
+        $("#time-tagline").html("");
+        if (ghPageConfig.hasOwnProperty("desc")) {
+            tmpText = ghPageConfig["desc"];
+            //tmpHtml = "<h2 id='project_tagline'>" + tmpText + "</h2>";
+            $("#time-tagline").append(tmpText);
+        }
+
+        //var linkArray = [];
+        var obj;
+
+        $("#time-bar").html("");
+        $("#time-bottom").html('<a href="#top">Scroll to top</a>');
+
+
+        if (ghPageConfig.hasOwnProperty("tar")) {
+            obj = {
+                "text": "Download",
+                "text-top": "tar",
+                "class": 'tar',
+                "url": ghPageConfig["tar"]
+            };
+
+            tmpHtml = '<a href="' + obj.url + '" class="download-button ' + obj.class + '"><span>' + obj.text + '</span></a>';
+            $("#time-bar").append(tmpHtml);
+            tmpHtml = '<a href="' + obj.url + '" class="' + obj.class + '">' + obj.text + '</a>';
+            $("#time-bottom").append(tmpHtml);
+
+
+        }
+
+        if (ghPageConfig.hasOwnProperty("zip")) {
+            obj = {
+                "text": "Download",
+                "text-top": "zip",
+                "class": 'zip',
+                "url": ghPageConfig["zip"]
+            };
+
+            tmpHtml = '<a href="' + obj.url + '" class="download-button ' + obj.class + '"><span>' + obj.text + '</span></a>';
+            $("#time-bar").append(tmpHtml);
+            tmpHtml = '<a href="' + obj.url + '" class="' + obj.class + '">' + obj.text + '</a>';
+            $("#time-bottom").append(tmpHtml);
+        }
+
+        if (ghPageConfig.hasOwnProperty("github")) {
+            obj = {
+                "text": "View Source on GitHub",
+                "text-top": "source code",
+                "class": 'code',
+                "url": ghPageConfig["github"]
+            };
+
+            tmpHtml = '<a href="' + obj.url + '" class="' + obj.class + '"><span>' + obj.text + '</span></a>';
+            $("#time-bar").append(tmpHtml);
+            tmpHtml = '<a href="' + obj.url + '" class="' + obj.class + '">' + obj.text + '</a>';
+            $("#time-bottom").append(tmpHtml);
+        }
+
+        $("#time-bottom").append('<p class="name"></p>');
+
+    }
+
+
+    function headerArchitect() {
+
+        var headerId = "#architect-page-header";
+        var tmpText = "";
+        var tmpHtml = "";
+        $(headerId).html("");
+        if (ghPageConfig.hasOwnProperty("title")) {
+            tmpText = ghPageConfig["title"];
+            tmpHtml = "<h1>" + tmpText + "</h1>";
+            $(headerId).append(tmpHtml);
+        }
+
+        if (ghPageConfig.hasOwnProperty("desc")) {
+            tmpText = ghPageConfig["desc"];
+            tmpHtml = "<h2 >" + tmpText + "</h2>";
+            $(headerId).append(tmpHtml);
+        }
+
+        if (ghPageConfig.hasOwnProperty("github")) {
+
+            tmpText = ghPageConfig["gtihub"];
+            tmpHtml = "<a href='" + tmpText + "' class='button'><small> View project on</small> GitHub</a>";
+            $(headerId).append(tmpHtml);
+        }
+
+
+        $("#sidebar").html("");
+        if (ghPageConfig.hasOwnProperty("zip")) {
+            tmpText = ghPageConfig["zip"];
+            tmpHtml = "<a href='" + tmpText + "' class='button'><small> Download</small> .zip file</a>";
+            $("#sidebar").append(tmpHtml);
+        }
+
+        if (ghPageConfig.hasOwnProperty("tar")) {
+            tmpText = ghPageConfig["tar"];
+            tmpHtml = "<a href='" + tmpText + "' class='button'><small> Download</small> .tar file</a>";
+            $("#sidebar").append(tmpHtml);
+        }
+
+
+        if (ghPageConfig.hasOwnProperty("footer") && ghPageConfig["footer"].hasOwnProperty("owner")) {
+            tmpText = ghPageConfig.footer.owner;
+            tmpHtml = "<p class='repo-owner'>" + tmpText + "</p>";
+            $("#sidebar").append(tmpHtml);
+        }
+
+        if (ghPageConfig.hasOwnProperty("footer") && ghPageConfig["footer"].hasOwnProperty("credits")) {
+            tmpText = ghPageConfig.footer.credits;
+            tmpHtml = "<p >" + tmpText + "</p>";
+            $("#sidebar").append(tmpHtml);
+        }
+
+    }
+
+
+    function addDisqus() {
+        //themeContentTag = Setting.theme + "-content";
+        //
+        //var disqus = '<div id="disqus_thread"></div>' +
+        //    '<script>' +
+        //    "var disqus_shortname = '" + commentConfig.short_name + "';" +
+        //    'var disqus_config = function () {' +
+        //    'this.page.url = "' + commentConfig.url + '";' +
+        //    'this.page.identifier = "' + commentConfig.key + '"' +
+        //    '};' +
+        //    '(function() { ' +
+        //    ' var d = document,' +
+        //    "s = d.createElement('script');" +
+        //    "s.src = '//' + disqus_shortname + '.disqus.com/embed.js';" +
+        //    "s.setAttribute('data-timestamp', +new Date()); (d.head || d.body).appendChild(s);" +
+        //    " })();</script>";
+        //$("#" + themeContentTag).append(disqus);
+    }
+
+
+    function addDuoshuo() {
+        /*themeContentTag = Setting.theme + "-content";
+         var duoshuo = '<div class="ds-thread" data-thread-key="' + commentConfig.key +
+         '" data-title="' + commentConfig.title +
+         '" data-url="' + commentConfig.url +
+         '"></div><script type="text/javascript">var duoshuoQuery = {short_name:"' + commentConfig.short_name +
+         '"};(function() {var ds = document.createElement("script");ds.type = "text/javascript";ds.async = true;ds.src = (document.location.protocol == "https:" ? "https:" : "http:") + "//static.duoshuo.com/embed.js";ds.charset = "UTF-8";(document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(ds);})();</script>';
+
+         $("#" + themeContentTag).append(duoshuo);*/
+    }
+
+    function processFooter() {
+        if (ghPageConfig.hasOwnProperty("footer") && ghPageConfig["footer"].hasOwnProperty("owner")) {
+            $("#" + Setting.theme + "-owner").html(ghPageConfig.footer.owner);
+        }
+
+        if (ghPageConfig.hasOwnProperty("footer") && ghPageConfig["footer"].hasOwnProperty("credits")) {
+            $("#" + Setting.theme + "-credits").html(ghPageConfig.footer.credits);
+        }
+    }
+
     function processMdContent(content) {
 
         try {
             resetBeforeProcess();
             calTocStart(content);
             setDsConfig(mdName);
-            $("#content").html(marked(content));
+
+            themeContentTag = Setting.theme + "-content";
+            $("#" + themeContentTag).html(marked(content));
+
+            handleGHpage();
 
             replaceImage();
 
@@ -282,13 +830,16 @@
             }
 
             if (Setting.highlight == Constants.highlight) {
+
                 $('pre code').each(function (i, block) {
                     hljs.highlightBlock(block);
                 });
+
             } else {
                 $("pre").addClass("line-numbers");
                 Prism.highlightAll();
             }
+
 
             if (Setting.mathjax) {
 
@@ -297,11 +848,11 @@
                     MathJax.Extension["TeX/AMSmath"].labels = {};
                 }
 
-                MathJax.Hub.Queue(["Typeset", MathJax.Hub, "content"]);
+                MathJax.Hub.Queue(["Typeset", MathJax.Hub, themeContentTag]);
             }
 
             if (Setting.emoji) {
-                emojify.run(document.getElementById('content'))
+                emojify.run(document.getElementById(themeContentTag))
             }
 
             if (Setting.sd) {
@@ -311,20 +862,36 @@
             if (Setting.echarts) {
                 var chart;
                 echartData.forEach(function (data) {
+
                     if (data.option.theme) {
                         chart = echarts.init(document.getElementById('echarts-' + data.id), data.option.theme);
+
                     } else {
                         chart = echarts.init(document.getElementById('echarts-' + data.id));
+
                     }
                     chart.setOption(data.option);
                 });
             }
-        } catch(e) {
+
+            if (Setting.comment == Constants.disqus) {
+                console.log(1111);
+                addDisqus();
+            }
+
+            if (Setting.comment == Constants.duoshuo) {
+                addDuoshuo();
+            }
+
+        } catch (e) {
+            console.log(e);
             sweetAlert("出错了", "处理文件出现错误，请检查语法", "error");
         }
 
 
         $("#loader").css("display", "none");
+        $("#gh-container").css("visibility", "visible");
+
 
         collapseUpload();
     }
@@ -340,11 +907,12 @@
     function clear() {
         localStorage.removeItem(Constants.mdName);
         localStorage.removeItem(Constants.mdContent);
+        var url = window.location.href.replace("#theme", "#");
+        window.location.href = url;
         window.location.reload();
     }
 
     function saveMdFile(name, content) {
-
         if (content.length > maxSize) {
             var sizeTip = $('[data-remodal-id=size-tip]').remodal();
             sizeTip.open();
@@ -356,9 +924,9 @@
     }
 
     function setDsConfig(name) {
-        dsConfig.key = name;
-        dsConfig.title = name;
-        dsConfig.url = name + ".html";
+        commentConfig.key = name;
+        commentConfig.title = name;
+        commentConfig.url = name + ".html";
     }
 
     function removeCacheFile() {
@@ -556,11 +1124,11 @@
         }
 
         if (hasTocTag) {
-            var content = $("#content").html();
+            var content = $("#" + themeContentTag).html();
             content = content.replace(Constants.tocTag, tocHtml);
-            $("#content").html(content);
+            $("#" + themeContentTag).html(content);
         } else {
-            $("#content").prepend(tocHtml);
+            $("#" + themeContentTag).prepend(tocHtml);
         }
     }
 
@@ -578,27 +1146,73 @@
         $("#loader").css("display", "none");
     }
 
+    function addThemeJs() {
+        console.log(Setting.theme);
+        switch (Setting.theme) {
+            case Theme.minimal:
+                console.log(222);
+                var filename = "/assets/theme/minimal/js/scale.fix.js"
+                var fileRef = document.createElement('script');
+                fileRef.setAttribute("type", "text/javascript");
+                fileRef.setAttribute("src", filename);
+                fileRef.onload = function () {
+
+                };
+                document.body.appendChild(fileRef);
+
+                break;
+
+            case Theme.time:
+
+                var filename = "/assets/theme/time/js/script.js"
+                var fileRef = document.createElement('script');
+                fileRef.setAttribute("type", "text/javascript");
+                fileRef.setAttribute("src", filename);
+                fileRef.onload = function () {
+
+                };
+                document.body.appendChild(fileRef);
+
+                break;
+        }
+
+
+    }
+
     function loadSetting() {
         var tmpSetting = localStorage.getItem(Constants.setting);
-        if (tmpSetting == null) {
-            return;
-        }
-        tmpSetting = JSON.parse(tmpSetting);
-        for (var key in tmpSetting) {
-            var newValue = tmpSetting[key];
-            if (newValue === undefined) {
-                console.warn('\'' + key + '\' parameter is undefined.');
-                continue;
+        if (tmpSetting != null) {
+
+
+            tmpSetting = JSON.parse(tmpSetting);
+            for (var key in tmpSetting) {
+                var newValue = tmpSetting[key];
+                if (newValue === undefined) {
+                    console.warn('\'' + key + '\' parameter is undefined.');
+                    continue;
+                }
+                if (key in Setting) {
+                    Setting[key] = newValue;
+                }
             }
-            if (key in Setting) {
-                Setting[key] = newValue;
+
+            var sname = localStorage.getItem(Constants.DHShort);
+            if (sname != null) {
+                commentConfig.short_name = sname;
             }
         }
 
-        var sname = localStorage.getItem(Constants.DHShort);
-        if (sname != null) {
-            dsConfig.short_name = sname;
-        }
+        //Setting.theme = Theme.time;
+
+        console.log(Setting.theme);
+        $("#" + Setting.theme).css("display", "block");
+
+        //document.getElementById('test-mod').disabled = true;
+
+
+        $("[prefix*='" + Setting.theme + "']").prop("rel", "stylesheet");
+        $("[prefix*='" + Setting.theme + "']").prop("disabled", false);
+        addThemeJs();
     }
 
     function saveSetting() {
@@ -645,12 +1259,8 @@
             saveSetting();
         });
 
-        if (Setting["highlight"] == Constants.highlight) {
-            $("#s_highlight").prop("checked", true);
-        } else {
-            $("#s_prism").prop("checked", true);
-        }
 
+        $("#s_" + Setting["highlight"]).prop("checked", true);
         $("[name='high']").each(function (index, ele) {
             $(ele).change(function (e) {
                 var text = $(ele).prop("id");
@@ -661,27 +1271,176 @@
                 }
                 saveSetting();
             })
-        })
+        });
 
+        /*$("#s_" + Setting["theme"]).prop("checked", true);*/
+
+
+        $("#s_" + Setting["theme"]).prop("checked", true);
+        $("[name='theme']").each(function (index, ele) {
+            $(ele).change(function (e) {
+                //$("#" + Setting["theme"]).css("display", "none");
+                var text = $(ele).prop("id").substring(2);
+                Setting["theme"] = text;
+                //console.log(text);
+                //if (text == "s_highlight") {
+                //    Setting["highlight"] = Constants.highlight;
+                //} else {
+                //    Setting["highlight"] = Constants.prism;
+                //}
+                //saveSetting();
+                //
+                //localStorage.removeItem(Constants.mdName);
+                //localStorage.removeItem(Constants.mdContent);
+
+                localStorage.setItem(Constants.setting, JSON.stringify(Setting));
+                var url = window.location.href.replace("#theme", "#");
+                window.location.href = url;
+                window.location.reload();
+                //clear();
+
+
+            })
+        });
+
+
+        $("#s_" + Setting["comment"]).prop("checked", true);
+        $("[name='comment']").each(function (index, ele) {
+            $(ele).change(function (e) {
+                //$("#" + Setting["theme"]).css("display", "none");
+                var text = $(ele).prop("id").substring(2);
+                Setting["comment"] = text;
+                saveSetting();
+
+
+            })
+        });
+        //switch (Setting.theme) {
+        //    case Theme.cayman:
+        //        $("#s_" + Theme.cayman).prop("checked", true);
+        //        break;
+        //    case Theme.minimal:
+        //        $("#s_" + Theme)
+        //}
+
+
+    }
+
+    function getLinkStr(cssFile) {
+        return '<link href="' + cssFile + '" rel="stylesheet" type="text/css">';
+    }
+
+    function getScriptStr(jsFile) {
+        return '<script type="text/javascript" src="' + jsFile + '"></script>'
     }
 
     function exportHtml() {
 
+        var urlPrefix = "http://localhost:81/";
+        var themeCssFiles = {
+            cayman: [
+                "http://cdn.bootcss.com/highlight.js/9.9.0/styles/github.min.css",
+                "http://cdn.bootcss.com/prism/9000.0.1/themes/prism.min.css",
+                "https://fonts.css.network/css?family=Open+Sans:400,700",
+                urlPrefix + "dist/theme/cayman/css/normalize.min.css",
+                urlPrefix + "dist/theme/cayman/css/cayman.min.css",
+                urlPrefix + "dist/css/custom-theme/common.min.css"
+            ],
+
+            minimal: [
+                "http://cdn.bootcss.com/highlight.js/9.9.0/styles/github.min.css",
+                "http://cdn.bootcss.com/prism/9000.0.1/themes/prism.min.css",
+                urlPrefix + "dist/theme/minimal/css/minimal.min.css",
+                urlPrefix + "dist/css/custom-theme/common.min.css",
+                urlPrefix + "dist/css/custom-theme/custom-minimal.min.css"
+            ],
+
+            modernist: [
+                "http://cdn.bootcss.com/highlight.js/9.9.0/styles/agate.min.css",
+                "http://cdn.bootcss.com/prism/9000.0.1/themes/prism-twilight.min.css",
+                "https://fonts.css.network/css?family=Lato:300italic,700italic,300,700",
+                urlPrefix + "dist/theme/modernist/css/modernist.min.css",
+                urlPrefix + "dist/css/custom-theme/common.min.css",
+                urlPrefix + "dist/css/custom-theme/custom-modernist.min.css"
+            ],
+
+            slate: [
+                "http://cdn.bootcss.com/highlight.js/9.9.0/styles/agate.min.css",
+                "http://cdn.bootcss.com/prism/9000.0.1/themes/prism-twilight.min.css",
+                "https://fonts.css.network/css?family=Roboto:400,400italic,700italic,700",
+                "https://fonts.css.network/css?family=Roboto+Condensed:300,300italic,700,700italic",
+                urlPrefix + "dist/theme/slate/css/normalize.min.css",
+                urlPrefix + "dist/theme/slate/css/slate.min.css",
+                urlPrefix + "dist/css/custom-theme/common.min.css",
+                urlPrefix + "dist/css/custom-theme/custom-slate.min.css"
+            ],
+            time: [
+                "http://cdn.bootcss.com/highlight.js/9.9.0/styles/agate.min.css",
+                "http://cdn.bootcss.com/prism/9000.0.1/themes/prism-twilight.min.css",
+                urlPrefix + "dist/theme/time/css/time.min.css",
+                urlPrefix + "dist/css/custom-theme/common.min.css",
+                urlPrefix + "dist/css/custom-theme/custom-time.min.css"
+            ],
+
+            architect: [
+                "http://cdn.bootcss.com/highlight.js/9.9.0/styles/github.min.css",
+                "http://cdn.bootcss.com/prism/9000.0.1/themes/prism.min.css",
+                "https://fonts.css.network/css?family=Architects+Daughter",
+                urlPrefix + "dist/theme/architect/css/architect.min.css",
+                urlPrefix + "dist/css/custom-theme/common.min.css",
+                urlPrefix + "dist/css/custom-theme/custom-architect.min.css"
+            ]
+        };
+
+        var themeJsFiles = {
+            minimal: [
+                urlPrefix + "dist/theme/minimal/js/scale.fix.min.js"
+            ],
+            modernist: [
+                urlPrefix + "dist/theme/modernist/js/scale.fix.min.js"
+            ],
+            time: [
+                urlPrefix + "dist/theme/time/js/script.min.js"
+            ]
+        };
+
         var htmlContent = "";
-
-
+        var styleFiles = "";
+        var jsFiles = "";
         var styleContent = "";
         var jsContent = "";
+        var hasAddJquery = false;
 
+        var tmpCssFiles = themeCssFiles[Setting.theme];
         if (Setting.highlight == Constants.highlight) {
-            styleContent += '<link href="http://cdn.bootcss.com/highlight.js/9.8.0/styles/atom-one-light.min.css" rel="stylesheet">';
+            styleFiles += getLinkStr(tmpCssFiles[0]);
         } else {
-            styleContent += '<link href="http://cdn.bootcss.com/prism/9000.0.1/themes/prism.min.css" rel="stylesheet">'
-            styleContent += '<link href="http://cdn.bootcss.com/prism/9000.0.1/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet">';
+            styleFiles += getLinkStr(tmpCssFiles[1]);
+        }
+        console.log(tmpCssFiles)
+        var i;
+        for (i = 2; i < tmpCssFiles.length; i++) {
+            styleFiles += getLinkStr(tmpCssFiles[i]);
         }
 
+        if (Setting.highlight == Constants.prism) {
+            styleFiles += getLinkStr("http://cdn.bootcss.com/prism/9000.0.1/plugins/line-numbers/prism-line-numbers.min.css");
+        }
+
+
+        //if (Setting.highlight == Constants.highlight) {
+        //    styleContent += '<link href="http://cdn.bootcss.com/highlight.js/9.8.0/styles/atom-one-light.min.css" rel="stylesheet">';
+        //} else {
+        //    styleContent += '<link href="http://cdn.bootcss.com/prism/9000.0.1/themes/prism.min.css" rel="stylesheet">'
+        //    styleContent += '<link href="http://cdn.bootcss.com/prism/9000.0.1/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet">';
+        //}
+
+        //if (Setting.emoji) {
+        //    styleContent += '<link href="http://cdn.bootcss.com/emojify.js/1.1.0/css/basic/emojify.min.css" rel="stylesheet">';
+        //}
+
         if (Setting.emoji) {
-            styleContent += '<link href="http://cdn.bootcss.com/emojify.js/1.1.0/css/basic/emojify.min.css" rel="stylesheet">';
+            styleFiles += getLinkStr("http://cdn.bootcss.com/emojify.js/1.1.0/css/basic/emojify.min.css");
         }
 
         var preMajax = Setting.mathjax;
@@ -698,7 +1457,22 @@
         }
 
         processMdContent(mdContent);
-        htmlContent = $("#content").html();
+
+
+        if(Setting.comment == Constants.duoshuo) {
+            var div = '<div class="ds-thread" data-thread-key="' + commentConfig.key +
+                '" data-title="' + commentConfig.title +
+                '" data-url="' + commentConfig.url + '"></div>';
+            $("#" + themeContentTag).append(div);
+
+        }
+
+        if(Setting.comment == Constants.disqus) {
+            var div = '<div id="disqus_thread"></div>';
+            $("#" + themeContentTag).append(div);
+        }
+
+        htmlContent = $("#" + Setting.theme).html();
 
         Setting.mathjax = preMajax;
         Setting.echarts = preEcharts;
@@ -706,6 +1480,7 @@
         exportSetting.echarts = false;
 
         processMdContent(mdContent);
+
 
         if (Setting.mathjax) {
             jsContent += '<script type="text/x-mathjax-config">' +
@@ -719,36 +1494,59 @@
         }
 
         if (Setting.backtop) {
-            styleContent += '<link href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">';
-            styleContent += ' <link rel="stylesheet" href="http://markdown.zhangjikai.com/dist/css/backtotop.min.css">';
-            jsContent += '<script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>';
-            jsContent += '<script type="text/javascript" src="http://markdown.zhangjikai.com/dist/js/backtotop.min.js"></script>';
+
+            hasAddJquery = true;
+            styleFiles += getLinkStr("http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css");
+            styleFiles += getLinkStr(urlPrefix + "dist/css/backtotop.min.css");
+            jsContent += getScriptStr("http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js");
+            jsContent += getScriptStr(urlPrefix + "dist/js/backtotop.min.js");
             jsContent += '<script type="text/javascript">backToTop.init()</script> '
+
+            //styleContent += '<link href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">';
+            //styleContent += ' <link rel="stylesheet" href="http://markdown.zhangjikai.com/dist/css/backtotop.min.css">';
+            //jsContent += '<script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>';
+            //jsContent += '<script type="text/javascript" src="http://markdown.zhangjikai.com/dist/js/backtotop.min.js"></script>';
+            //jsContent += '<script type="text/javascript">backToTop.init()</script> '
         }
 
-        if (Setting.duoshuo) {
-            jsContent += '<div class="ds-thread" data-thread-key="' + dsConfig.key +
-                '" data-title="' + dsConfig.title +
-                '" data-url="' + dsConfig.url +
-                '"></div><script type="text/javascript">var duoshuoQuery = {short_name:"' + dsConfig.short_name +
+        if (Setting.comment == Constants.duoshuo) {
+
+
+            jsContent += '<script type="text/javascript">var duoshuoQuery = {short_name:"' + commentConfig.short_name +
                 '"};(function() {var ds = document.createElement("script");ds.type = "text/javascript";ds.async = true;ds.src = (document.location.protocol == "https:" ? "https:" : "http:") + "//static.duoshuo.com/embed.js";ds.charset = "UTF-8";(document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(ds);})();</script>';
+        }
+
+        if (Setting.comment == Constants.disqus) {
+
+
+
+            jsContent += '<script type="text/javascript">' +
+                "var disqus_shortname = '" + commentConfig.short_name + "';" +
+                'var prefix = document.location.protocol == "https:" ? "https:" : "http:"' +
+                'var disqus_config = function () {' +
+                'this.page.url = "' + commentConfig.url + '";' +
+                'this.page.identifier = "' + commentConfig.key + '"' +
+                '};' +
+                '(function() { ' +
+                ' var d = document,' +
+                "s = d.createElement('script');" +
+                "s.src = prefix + '//' + disqus_shortname + '.disqus.com/embed.js';" +
+                "s.setAttribute('data-timestamp', +new Date()); (d.head || d.body).appendChild(s);" +
+                " })();</script>";
         }
 
         if (Setting.echarts) {
 
-            jsContent += '<br />';
-            jsContent += '<script src="http://cdn.bootcss.com/echarts/3.3.2/echarts.min.js"></script>';
+            jsContent += getScriptStr("http://cdn.bootcss.com/echarts/3.3.2/echarts.min.js");
             echartData.forEach(function (data) {
                 var themeObj = {};
-
                 if (data.option.theme) {
                     if (!themeObj.hasOwnProperty(data.option.theme)) {
                         if (echartThemeText.indexOf(data.option.theme) != -1) {
-                            jsContent += '<script src="http://markdown.zhangjikai.com/dist/js/echarts-theme/' + data.option.theme + '.min.js"></script>';
+                            jsContent += getScriptStr(urlPrefix + 'dist/js/echarts-theme/' + data.option.theme + '.min.js');
                         }
                         themeObj[data.option.theme] = "theme";
                     }
-
                 }
             });
             jsContent += '<br />';
@@ -758,16 +1556,24 @@
                 var theme = "";
 
                 if (data.option.theme) {
-
                     theme = data.option.theme;
                 }
                 jsContent += 'var chart' + index + ' = echarts.init(document.getElementById("echarts-' + data.id + '"),"' + theme + '");\n' +
                     'var option' + index + ' = ' + data.previousOption + ';\n' +
                     'chart' + index + '.setOption(option' + index + ');\n';
             });
-            jsContent += "</script>"
+            jsContent += "</script>";
+        }
 
+        if (Setting.theme == Theme.time && !hasAddJquery) {
+            jsContent += getScriptStr("http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js");
+        }
 
+        var tmpJsFiles = themeJsFiles[Setting.theme];
+        if (tmpJsFiles != null ) {
+            for (i = 0; i < tmpJsFiles.length; i++) {
+                jsContent += getScriptStr(tmpJsFiles[i]);
+            }
         }
 
         var htmlContent = '<!DOCTYPE html>' +
@@ -778,8 +1584,7 @@
             '<title>' +
             mdName +
             '</title>' +
-            styleContent +
-            '<link rel="stylesheet" href="http://markdown.zhangjikai.com/dist/css/markdown.min.css">' +
+            styleFiles +
             '</head>' +
             '<body>' +
             htmlContent +
@@ -886,10 +1691,11 @@
         animation: 'fade' // Available animations: 'fade', 'slide'
     });
 
+
+    $('[custom-type="custom"]').prop("disabled", true);
     loadSetting();
     addSetting();
     loadCacheFile();
-
 
 }());
 
