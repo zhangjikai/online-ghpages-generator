@@ -12,11 +12,11 @@
           prefix="caymanminimal" disabled="true">
 
 
-    <!-- modernist -->
-    <link rel="alternate stylesheet" href="assets/lib/highlightjs/styles/agate.css" custom-type="custom"
-          prefix="modernist" disabled="true">
-    <link href="http://cdn.bootcss.com/prism/9000.0.1/themes/prism-twilight.min.css" rel="alternate stylesheet"
-          custom-type="custom" prefix="modernist" disabled="true">
+    <!-- modernist slate-->
+    <link rel="stylesheet" href="assets/lib/highlightjs/styles/agate.css" custom-type="custom"
+          prefix="modernistslate" disabled="true">
+    <link href="http://cdn.bootcss.com/prism/9000.0.1/themes/prism-twilight.min.css" rel=" stylesheet"
+          custom-type="custom" prefix="modernistslate" disabled="true">
 
 
     <link rel="stylesheet" href="assets/lib/SyntaxHighlighter/styles/shCore.css">
@@ -33,7 +33,10 @@
     <!--<link rel="stylesheet" href="assets/css/markdown.css">-->
 
     <!-- cayman -->
-    <!--<link href="http://fonts.useso.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css" prefix="cayman">-->
+
+    <!--<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>-->
+    <link rel="stylesheet" href="assets/theme/cayman/css/fonts.css" custom-type="custom" prefix="cayman"
+          disabled="true">
     <link rel="stylesheet" href="assets/theme/cayman/css/normalize.css" custom-type="custom" prefix="cayman"
           disabled="true">
     <link rel="stylesheet" href="assets/theme/cayman/css/cayman.css" custom-type="custom" prefix="cayman"
@@ -42,16 +45,33 @@
     <!-- minimal-->
     <link rel="stylesheet" href="assets/theme/minimal/css/minimal.css" custom-type="custom" prefix="minimal"
           disabled="true">
-    <link rel="stylesheet" href="assets/css/custom-theme/custom-minimal.css" custom-type="custom" prefix="minimal"
-          disabled="true">
 
     <!-- modernist -->
+    <!--url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700-->
+    <link rel="stylesheet" href="assets/theme/modernist/css/fonts.css" custom-type="custom" prefix="modernist"
+          disabled="true">
     <link rel="stylesheet" href="assets/theme/modernist/css/modernist.css" custom-type="custom" prefix="modernist"
           disabled="true">
-    <link rel="stylesheet" href="assets/css/custom-theme/custom-modernist.css" custom-type="custom" prefix="modernist"
+
+    <!-- slate -->
+    <!--<link href='https://fonts.googleapis.com/css?family=Roboto:400,400italic,700italic,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:300,300italic,700,700italic' rel='stylesheet' type='text/css'>-->
+    <link rel="stylesheet" href="assets/theme/slate/css/fonts.css" custom-type="custom" prefix="slate"
+          disabled="true">
+    <link rel="stylesheet" href="assets/theme/slate/css/normalize.css" custom-type="custom" prefix="slate"
+          disabled="true">
+    <link rel="stylesheet" href="assets/theme/slate/css/slate.css" custom-type="custom" prefix="slate"
           disabled="true">
 
     <link rel="stylesheet" href="assets/css/custom-theme/common.css">
+
+    <link rel="stylesheet" href="assets/css/custom-theme/custom-minimal.css" custom-type="custom" prefix="minimal"
+          disabled="true">
+    <link rel="stylesheet" href="assets/css/custom-theme/custom-modernist.css" custom-type="custom" prefix="modernist"
+          disabled="true">
+    <link rel="stylesheet" href="assets/css/custom-theme/custom-slate.css" custom-type="custom" prefix="slate"
+          disabled="true">
+
     <link href="http://cdn.bootcss.com/prism/9000.0.1/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="assets/css/style.css">
@@ -169,6 +189,37 @@
 
             <p id="modernist-credits"></p>
         </footer>
+    </div>
+
+    <!-- slate -->
+    <div id="slate" class="div-hide">
+        <div id="header_wrap" class="outer">
+            <header id="slate-page-header" class="inner">
+            </header>
+
+
+        </div>
+
+        <section class="outer">
+            <div class="downloads inner" id="slate-download">
+                <!--<a class="zip_download_link" href="#">Download .zip</a>
+                <a class="tar_download_link" href="#">Download .tar.gz</a>-->
+            </div>
+        </section>
+
+
+        <div id="main_content_wrap" class="outer">
+            <section id="main_content" class="inner">
+                <section id="slate-content"></section>
+            </section>
+        </div>
+        <div id="footer_wrap" class="outer">
+            <footer class="inner">
+                <p id="slate-owner"></p>
+
+                <p id="slate-credits"></p>
+            </footer>
+        </div>
     </div>
 
 
@@ -311,6 +362,8 @@
             <label for="s_minimal">Minimal</label>
             <input class="magic-radio custom-radio" type="radio" name="theme" id="s_modernist">
             <label for="s_modernist">Modernist</label>
+            <input class="magic-radio custom-radio" type="radio" name="theme" id="s_slate">
+            <label for="s_slate">Slate</label>
         </div>
     </div>
 
@@ -338,6 +391,8 @@
       }
     }
   });
+
+
 
 </script>
 <script type="text/javascript"

@@ -18,3 +18,8 @@
   box-sizing: border-box;
   padding: 0;
 }
+.custom-echarts {
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin: 1em 0;
+}

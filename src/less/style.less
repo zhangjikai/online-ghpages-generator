@@ -58,6 +58,7 @@ nav {
     height: @nav-height;
     margin: 0 1em;
     padding: 0;
+    border-bottom: none;
     &:hover {
       color: @nav-text-color;
       text-decoration: none;
@@ -169,12 +170,12 @@ nav {
   }
 }*/
 
-#upload-top{
+#upload-top {
   position: fixed;
   background: #fff;
   height: @upload-margin * 2 +  @thumb-upload-area-height + 4px;
   width: 100%;
-  top:@nav-height;
+  top: @nav-height;
   z-index: 999;
 }
 
@@ -189,6 +190,7 @@ nav {
   left: @upload-margin;
   right: @upload-margin;
   top: @nav-height + @upload-margin;
+  font-size: 14px;
 
 }
 
@@ -256,8 +258,6 @@ nav {
   }
 }
 
-
-
 @media screen and (max-width: 520px) {
   #upload {
     .upload-area {
@@ -310,7 +310,7 @@ nav {
 .custom-remodal-close {
   left: auto;
   right: 0;
-  &:before{
+  &:before {
     left: auto;
     right: 0;
   }
@@ -323,7 +323,6 @@ nav {
     line-height: 1.2em;
   }
 }
-
 
 @loading-background-opacity: 0.7;
 @loading-background-opacity-IE : @loading-background-opacity * 100;
@@ -359,17 +358,16 @@ nav {
   border: 0px;
 }
 
-
 :target:before {
-  content:"";
-  display:block;
-  height:50px; /* fixed header height*/
-  margin:-50px 0 0; /* negative fixed header height */
+  content: "";
+  display: block;
+  height: 50px; /* fixed header height*/
+  margin: -50px 0 0; /* negative fixed header height */
 }
 
 /*setting dialog*/
 
-.setting-section{
+.setting-section {
   margin-bottom: 1em;
 }
 
@@ -385,34 +383,45 @@ nav {
   text-align: left;
 }
 
-.toc-level{
+.toc-level {
   width: 50px;
 }
-.custom-checkbox+label {
+
+.custom-checkbox + label {
   text-align: left;
   line-height: 16px;
   display: inline-block;
   margin: 0.5em 1em;
+
+
   &:before {
     width: 14px;
     height: 14px;
+
   }
 
   &:after {
     left: 5px;
     width: 5px;
     height: 8px;
+
   }
 }
 
-.custom-radio+label {
+.custom-radio + label {
   text-align: left;
   line-height: 16px;
   display: inline-block;
   margin: 0.5em 1em;
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
   &:before {
     width: 14px;
     height: 14px;
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    box-sizing: content-box;
   }
 
   &:after {
@@ -420,13 +429,16 @@ nav {
     top: 5px;
     width: 6px;
     height: 6px;
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    box-sizing: content-box;
   }
 }
 
-.div-hide{
+.div-hide {
   display: none;
 }
 
-#modernist{
+#modernist {
   padding-top: 50px;
 }

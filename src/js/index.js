@@ -55,7 +55,8 @@
     var Theme = {
         cayman: "cayman",
         minimal: "minimal",
-        modernist: "modernist"
+        modernist: "modernist",
+        slate: "slate"
     };
 
     var Setting = {
@@ -253,7 +254,7 @@
                 previousOption: text
             });
 
-            return '<div id="echarts-' + echartIndex + '" style="width: ' + width + ';height:' + height + ';"></div>'
+            return '<div class="custom-echarts" id="echarts-' + echartIndex + '" style="width: ' + width + ';height:' + height + ';"></div>'
         } catch (e) {
 
             sweetAlert("出错了", "解析 ECharts 配置出现错误，请检查语法", "error");
@@ -367,6 +368,9 @@
                 break;
             case Theme.modernist:
                 headerModernist();
+                break;
+            case Theme.slate:
+                headerSlate();
                 break;
         }
         processFooter();
@@ -510,7 +514,6 @@
         }
     }
 
-
     function headerModernist() {
         var headerId = "#modernist-page-header";
         $(headerId).html("");
@@ -569,6 +572,63 @@
             });
         }
     }
+
+
+    function headerSlate() {
+        var headerId = "#slate-page-header";
+        $(headerId).html("");
+        var tmpText = "";
+        var tmpHtml = "";
+        var tmpObj;
+
+
+        if (ghPageConfig.hasOwnProperty("github")) {
+            tmpText = ghPageConfig["gtihub"];
+            tmpHtml = "<a id='forkme_banner' href='" + tmpText + "'> View on Github</a>";
+            $(headerId).append(tmpHtml);
+        }
+
+        if (ghPageConfig.hasOwnProperty("title")) {
+            //$("#page-title").append(ghPageConfig["title"]);
+            tmpText = ghPageConfig["title"];
+            tmpHtml = "<h1 id='project_title'>" + tmpText + "</h1>";
+            $(headerId).append(tmpHtml);
+        }
+
+        if (ghPageConfig.hasOwnProperty("desc")) {
+            tmpText = ghPageConfig["desc"];
+            tmpHtml = "<h2 id='project_tagline'>" + tmpText + "</h2>";
+            $(headerId).append(tmpHtml);
+        }
+
+        var linkArray = [];
+
+        if (ghPageConfig.hasOwnProperty("zip")) {
+            linkArray.push({
+                "text": "Download .zip",
+                "url": ghPageConfig["zip"]
+            });
+        }
+
+        if (ghPageConfig.hasOwnProperty("tar")) {
+            linkArray.push({
+                "text": "Download .tar.gz",
+                "url": ghPageConfig["tar"]
+            });
+        }
+
+
+
+        $("#slate-download").html("");
+        if (linkArray.length > 1) {
+            linkArray.forEach(function (link) {
+                tmpHtml = '<a href="' + link.url + '">' + link.text + '</a>';
+                $("#slate-download").append(tmpHtml);
+            });
+        }
+    }
+
+
 
     function processFooter() {
         if (ghPageConfig.hasOwnProperty("footer") && ghPageConfig["footer"].hasOwnProperty("owner")) {
@@ -639,10 +699,13 @@
             if (Setting.echarts) {
                 var chart;
                 echartData.forEach(function (data) {
+
                     if (data.option.theme) {
                         chart = echarts.init(document.getElementById('echarts-' + data.id), data.option.theme);
+
                     } else {
                         chart = echarts.init(document.getElementById('echarts-' + data.id));
+
                     }
                     chart.setOption(data.option);
                 });
@@ -954,7 +1017,7 @@
             dsConfig.short_name = sname;
         }
 
-        //Setting.theme = Theme.modernist;
+        //Setting.theme = Theme.slate;
 
         $("#" + Setting.theme).css("display", "block");
 
@@ -1050,7 +1113,10 @@
                 //localStorage.removeItem(Constants.mdContent);
 
                 localStorage.setItem(Constants.setting, JSON.stringify(Setting));
-                clear();
+                var url = window.location.href.replace("#theme", "#");
+                window.location.href = url;
+                window.location.reload();
+                //clear();
 
 
             })
@@ -1099,7 +1165,7 @@
         }
 
         processMdContent(mdContent);
-        htmlContent = $("#" + themeContentTag).html();
+        htmlContent = $("#container").html();
 
         Setting.mathjax = preMajax;
         Setting.echarts = preEcharts;

@@ -42,6 +42,7 @@ nav a {
   height: 48px;
   margin: 0 1em;
   padding: 0;
+  border-bottom: none;
 }
 nav a:hover {
   color: #fff;
@@ -144,6 +145,7 @@ nav a#openup {
   left: 10px;
   right: 10px;
   top: 58px;
+  font-size: 14px;
 }
 #fold {
   display: block;
@@ -327,16 +329,25 @@ nav a#openup {
   line-height: 16px;
   display: inline-block;
   margin: 0.5em 1em;
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
 }
 .custom-radio + label:before {
   width: 14px;
   height: 14px;
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
 }
 .custom-radio + label:after {
   left: 5px;
   top: 5px;
   width: 6px;
   height: 6px;
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
 }
 .div-hide {
   display: none;
