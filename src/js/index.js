@@ -1336,7 +1336,7 @@
 
     function exportHtml() {
 
-        var urlPrefix = "http://localhost:81/";
+        var urlPrefix = "http://page.zhangjikai.com/";
         var themeCssFiles = {
             cayman: [
                 "http://cdn.bootcss.com/highlight.js/9.9.0/styles/github.min.css",
