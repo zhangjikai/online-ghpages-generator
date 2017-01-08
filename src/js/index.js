@@ -56,7 +56,8 @@
         cayman: "cayman",
         minimal: "minimal",
         modernist: "modernist",
-        slate: "slate"
+        slate: "slate",
+        time: "time"
     };
 
     var Setting = {
@@ -372,6 +373,9 @@
             case Theme.slate:
                 headerSlate();
                 break;
+            case Theme.time:
+                headerTime();
+                break;
         }
         processFooter();
     }
@@ -618,7 +622,6 @@
         }
 
 
-
         $("#slate-download").html("");
         if (linkArray.length > 1) {
             linkArray.forEach(function (link) {
@@ -629,6 +632,96 @@
     }
 
 
+    function headerTime() {
+        var headerId = "#time-page-header";
+        $(headerId).html("");
+        var tmpText = "";
+        var tmpHtml = "";
+        var tmpObj;
+
+
+        /*if (ghPageConfig.hasOwnProperty("github")) {
+         tmpText = ghPageConfig["gtihub"];
+         tmpHtml = "<a id='forkme_banner' href='" + tmpText + "'> View on Github</a>";
+         $(headerId).append(tmpHtml);
+         }
+         */
+        if (ghPageConfig.hasOwnProperty("title")) {
+            //$("#page-title").append(ghPageConfig["title"]);
+            tmpText = ghPageConfig["title"];
+            tmpHtml = "<h1 class='title'>" + tmpText + "</h1>";
+            $(headerId).append(tmpHtml);
+        }
+
+        $("#time-tagline").html("");
+        if (ghPageConfig.hasOwnProperty("desc")) {
+            tmpText = ghPageConfig["desc"];
+            //tmpHtml = "<h2 id='project_tagline'>" + tmpText + "</h2>";
+            $("#time-tagline").append(tmpText);
+        }
+
+        //var linkArray = [];
+        var obj;
+
+        $("#time-bar").html("");
+        $("#time-bottom").html('<a href="#top">Scroll to top</a>');
+
+
+
+        if (ghPageConfig.hasOwnProperty("tar")) {
+            obj = {
+                "text": "Download",
+                "text-top": "tar",
+                "class": 'tar',
+                "url": ghPageConfig["tar"]
+            };
+
+            tmpHtml = '<a href="' + obj.url + '" class="download-button ' + obj.class + '"><span>' + obj.text + '</span></a>';
+            $("#time-bar").append(tmpHtml);
+            tmpHtml = '<a href="' + obj.url + '" class="' + obj.class + '">' + obj.text + '</a>';
+            $("#time-bottom").append(tmpHtml);
+
+
+        }
+
+        if (ghPageConfig.hasOwnProperty("zip")) {
+            obj = {
+                "text": "Download",
+                "text-top": "zip",
+                "class": 'zip',
+                "url": ghPageConfig["zip"]
+            };
+
+            tmpHtml = '<a href="' + obj.url + '" class="download-button ' + obj.class + '"><span>' + obj.text + '</span></a>';
+            $("#time-bar").append(tmpHtml);
+            tmpHtml = '<a href="' + obj.url + '" class="' + obj.class + '">' + obj.text + '</a>';
+            $("#time-bottom").append(tmpHtml);
+        }
+
+        if (ghPageConfig.hasOwnProperty("github")) {
+            obj = {
+                "text": "View Source on GitHub",
+                "text-top": "source code",
+                "class": 'code',
+                "url": ghPageConfig["github"]
+            };
+
+            tmpHtml = '<a href="' + obj.url + '" class="' + obj.class + '"><span>' + obj.text + '</span></a>';
+            $("#time-bar").append(tmpHtml);
+            tmpHtml = '<a href="' + obj.url + '" class="' + obj.class + '">' + obj.text + '</a>';
+            $("#time-bottom").append(tmpHtml);
+        }
+
+        $("#time-bottom").append('<p class="name"></p>');
+
+        //$("#slate-download").html("");
+        //if (linkArray.length > 1) {
+        //    linkArray.forEach(function (link) {
+        //        tmpHtml = '<a href="' + link.url + '" class="download>' + link.text + '</a>';
+        //        $("#slate-download").append(tmpHtml);
+        //    });
+        //}
+    }
 
     function processFooter() {
         if (ghPageConfig.hasOwnProperty("footer") && ghPageConfig["footer"].hasOwnProperty("owner")) {
@@ -717,7 +810,7 @@
 
 
         $("#loader").css("display", "none");
-        $("#container").css("visibility", "visible");
+        $("#gh-container").css("visibility", "visible");
 
 
         collapseUpload();
@@ -984,7 +1077,21 @@
                 fileRef.setAttribute("type", "text/javascript");
                 fileRef.setAttribute("src", filename);
                 fileRef.onload = function () {
-                    console.log(111);
+                    //console.log(111);
+                    //print11();
+                };
+                document.body.appendChild(fileRef);
+
+                break;
+
+            case Theme.time:
+                console.log(222);
+                var filename = "/assets/theme/time/js/script.js"
+                var fileRef = document.createElement('script');
+                fileRef.setAttribute("type", "text/javascript");
+                fileRef.setAttribute("src", filename);
+                fileRef.onload = function () {
+                    //console.log(111);
                     //print11();
                 };
                 document.body.appendChild(fileRef);
@@ -1017,7 +1124,7 @@
             dsConfig.short_name = sname;
         }
 
-        //Setting.theme = Theme.slate;
+        //Setting.theme = Theme.time;
 
         $("#" + Setting.theme).css("display", "block");
 
@@ -1165,7 +1272,7 @@
         }
 
         processMdContent(mdContent);
-        htmlContent = $("#container").html();
+        htmlContent = $("#gh-container").html();
 
         Setting.mathjax = preMajax;
         Setting.echarts = preEcharts;
