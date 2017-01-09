@@ -594,7 +594,7 @@
 
 
         if (ghPageConfig.hasOwnProperty("github")) {
-            tmpText = ghPageConfig["gtihub"];
+            tmpText = ghPageConfig["github"];
             tmpHtml = "<a id='forkme_banner' href='" + tmpText + "'> View on Github</a>";
             $(headerId).append(tmpHtml);
         }
@@ -735,7 +735,7 @@
 
         if (ghPageConfig.hasOwnProperty("github")) {
 
-            tmpText = ghPageConfig["gtihub"];
+            tmpText = ghPageConfig["github"];
             tmpHtml = "<a href='" + tmpText + "' class='button'><small> View project on</small> GitHub</a>";
             $(headerId).append(tmpHtml);
         }
